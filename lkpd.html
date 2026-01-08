@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lembar Kerja Siswa</title>
+    <style>
+        body { font-family: monospace; background: #f8fafc; margin: 0; padding-bottom: 80px; }
+        .container { max-width: 800px; margin: 20px auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 5px solid #2563eb; }
+        
+        h1, h2 { color: #1e293b; }
+        .badge { background: #e2e8f0; padding: 5px 10px; border-radius: 4px; font-weight: bold; }
+        
+        /* Soal Styles */
+        .soal-box { background: #f1f5f9; padding: 15px; margin-bottom: 20px; border-left: 4px solid #3b82f6; }
+        input, textarea { width: 100%; padding: 10px; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; }
+        
+        /* Menu Simpan (Floating Bar) */
+        .floating-menu {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; padding: 15px;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 800px; margin: 0 auto;
+        }
+        .btn-back { background: transparent; color: #64748b; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+        .btn-save { background: #16a34a; color: white; border: none; padding: 10px 30px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3); }
+        .btn-save:hover { background: #15803d; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header style="border-bottom: 2px dashed #cbd5e1; padding-bottom: 20px; margin-bottom: 30px;">
+            <h1 id="judulLKPD">LKPD 1: AGEN DATA</h1>
+            <p>
+                Agen: <span id="namaSiswa" class="badge">-</span> | 
+                Divisi: <span id="kelasSiswa" class="badge">-</span>
+            </p>
+        </header>
+
+        <form id="formLKPD">
+            <div class="soal-box">
+                <label><strong>1. Identitas Tim (Nama Kelompok)</strong></label>
+                <input type="text" name="nama_tim" placeholder="Contoh: Garuda Cyber">
+            </div>
+
+            <div class="soal-box">
+                <label><strong>2. Temuan Data Rahasia</strong></label>
+                <p><small>Sebutkan satu data yang tidak boleh disebar sembarangan:</small></p>
+                <input type="text" name="soal_1">
+            </div>
+
+            <div class="soal-box">
+                <label><strong>3. Analisa Masalah (Esai)</strong></label>
+                <p><small>Mengapa kita harus melindungi data pribadi teman?</small></p>
+                <textarea name="soal_2" rows="4"></textarea>
+            </div>
+        </form>
+    </div>
+
+    <div class="floating-menu">
+        <button class="btn-back" onclick="window.location.href='dashboard.html'"⬅️ Kembali</button>
+        <span id="statusSave" style="color: #64748b; font-size: 0.9em;">Belum disimpan</span>
+        <button class="btn-save" onclick="simpanData()">💾 SIMPAN PERUBAHAN</button>
+    </div>
+
+    <script>
+        // 1. Cek Sesi
+        const nama = localStorage.getItem('siswa_nama');
+        const kelas = localStorage.getItem('siswa_kelas');
+        if(!nama) window.location.href = 'index.html';
+
+        document.getElementById('namaSiswa').innerText = nama;
+        document.getElementById('kelasSiswa').innerText = kelas;
+
+        // 2. Konfigurasi Google Sheets (GANTI URL SCRIPT DI SINI)
+        const SCRIPT_URL = 'URL_GOOGLE_APPS_SCRIPT_BAPAK_DISINI'; 
+
+        // 3. Fungsi Simpan
+        function simpanData() {
+            const btn = document.querySelector('.btn-save');
+            const status = document.getElementById('statusSave');
+            
+            btn.innerText = "⏳ Mengirim...";
+            btn.disabled = true;
+
+            // Ambil Data Form
+            const form = document.getElementById('formLKPD');
+            const formData = new FormData(form);
+            const dataJawaban = Object.fromEntries(formData.entries());
+
+            const payload = {
+                kode_lkpd: localStorage.getItem('active_lkpd') || 'LKPD-UMUM',
+                nama: nama,
+                kelas: kelas,
+                nilai: "-",
+                jawaban: dataJawaban
+            };
+
+            // Kirim ke Google Apps Script
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                alert("✅ Data Berhasil Disimpan ke Server!");
+                status.innerText = "Tersimpan: " + new Date().toLocaleTimeString();
+                status.style.color = "green";
+                btn.innerText = "💾 SIMPAN PERUBAHAN";
+                btn.disabled = false;
+            })
+            .catch(err => {
+                alert("⚠️ Gagal menyimpan. Cek koneksi internet.");
+                btn.innerText = "💾 SIMPAN PERUBAHAN";
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
