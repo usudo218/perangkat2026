@@ -1,26 +1,68 @@
-<button onclick="login()">MASUK KELAS 🚀</button>
-        
-        <div style="margin-top: 15px; text-align: center;">
-            <a href="#" onclick="aksesGuru()" style="font-size: 0.8rem; color: #64748b; text-decoration: none;">
-                🔒 Akses Guru
-            </a>
-        </div>
-    </div>
-
-    <script src="siswa.js"></script> 
-    <script>
-        // ... kode logika siswa tetap sama ...
-
-        // TAMBAHAN: FUNGSI AKSES GURU
-        function aksesGuru() {
-            let pass = prompt("Masukkan Sandi Guru:");
-            // Ganti "MERDEKA" dengan password rahasia Bapak
-            if(pass === "MERDEKA") {
-                window.location.href = "admin.html"; // Pindah ke halaman Admin
-            } else {
-                alert("Sandi salah!");
-            }
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SMAN 1 MUNCAR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: #0f172a; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box; 
         }
-    </script>
-</body>
-</html>
+        
+        .login-card { 
+            background: white; 
+            padding: 2.5rem; 
+            border-radius: 20px; 
+            width: 100%; 
+            max-width: 400px; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
+            text-align: center;
+        }
+        
+        /* HEADER STYLE */
+        .brand-title h1 { margin: 0; color: #1e293b; font-size: 1.8rem; letter-spacing: 1px; font-weight: 800; }
+        .brand-title h3 { margin: 5px 0 0 0; color: #64748b; font-size: 0.9rem; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; }
+        .divider { height: 4px; width: 60px; background: #2563eb; margin: 20px auto; border-radius: 2px; }
+
+        /* INPUT STYLE */
+        label { display: block; text-align: left; font-weight: 600; color: #334155; margin-bottom: 8px; font-size: 0.9rem; }
+        select { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 14px; box-sizing: border-box; font-family: inherit; transition: 0.3s; }
+        select:focus { outline: none; border-color: #2563eb; background-color: #f8fafc; }
+        
+        /* TOMBOL SISWA */
+        button { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; padding: 15px; width: 100%; border-radius: 10px; font-size: 1rem; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
+        button:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4); }
+
+        /* TOMBOL GURU */
+        .teacher-link { margin-top: 25px; padding-top: 20px; border-top: 1px dashed #cbd5e1; }
+        .teacher-link a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: 0.3s; }
+        .teacher-link a:hover { color: #2563eb; }
+
+        /* FOOTER STYLE */
+        .footer { text-align: center; font-size: 0.75rem; color: #64748b; margin-top: 3rem; line-height: 1.6; opacity: 0.8; }
+        .footer strong { color: #cbd5e1; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="brand-title">
+            <h1>INFORMATIKA</h1>
+            <h3>SMA NEGERI 1 MUNCAR</h3>
+            <div class="divider"></div>
+        </div>
+        
+        <label>Pilih Kelas:</label>
+        <select id="pilihKelas" onchange="filterSiswa()">
+            <option value="">-- Pilih Kelas --</option>
+        </
