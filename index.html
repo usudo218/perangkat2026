@@ -4,65 +4,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SMAN 1 MUNCAR</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
+        /* RESET CSS AGAR TAMPILAN RAPI DI SEMUA BROWSER */
+        * { box-sizing: border-box; }
         body { 
-            font-family: 'Poppins', sans-serif; 
-            background: #0f172a; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #0f172a; /* Warna Background Gelap */
+            color: #333;
             display: flex; 
             flex-direction: column; 
-            justify-content: center; 
             align-items: center; 
+            justify-content: center; 
             min-height: 100vh; 
             margin: 0; 
-            padding: 20px; 
-            box-sizing: border-box; 
         }
-        
-        .login-card { 
+
+        /* KARTU LOGIN */
+        .card { 
             background: white; 
-            padding: 2.5rem; 
-            border-radius: 20px; 
-            width: 100%; 
+            width: 90%; 
             max-width: 400px; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); 
+            padding: 40px 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); 
             text-align: center;
         }
-        
-        /* HEADER STYLE */
-        .brand-title h1 { margin: 0; color: #1e293b; font-size: 1.8rem; letter-spacing: 1px; font-weight: 800; }
-        .brand-title h3 { margin: 5px 0 0 0; color: #64748b; font-size: 0.9rem; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; }
-        .divider { height: 4px; width: 60px; background: #2563eb; margin: 20px auto; border-radius: 2px; }
 
-        /* INPUT STYLE */
-        label { display: block; text-align: left; font-weight: 600; color: #334155; margin-bottom: 8px; font-size: 0.9rem; }
-        select { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 14px; box-sizing: border-box; font-family: inherit; transition: 0.3s; }
-        select:focus { outline: none; border-color: #2563eb; background-color: #f8fafc; }
+        /* JUDUL */
+        h1 { margin: 0; color: #1e293b; font-size: 24px; font-weight: 800; letter-spacing: 1px; }
+        h3 { margin: 5px 0 20px 0; color: #64748b; font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; }
+        .garis { height: 4px; width: 50px; background: #2563eb; margin: 0 auto 30px auto; border-radius: 2px; }
+
+        /* FORM */
+        label { display: block; text-align: left; font-weight: bold; margin-bottom: 5px; color: #475569; }
+        select { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 20px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            background: #f8fafc;
+        }
         
-        /* TOMBOL SISWA */
-        button { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; padding: 15px; width: 100%; border-radius: 10px; font-size: 1rem; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
-        button:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4); }
+        /* TOMBOL MASUK */
+        button.btn-masuk { 
+            background: #2563eb; 
+            color: white; 
+            border: none; 
+            width: 100%; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        button.btn-masuk:hover { background: #1d4ed8; transform: translateY(-2px); }
 
         /* TOMBOL GURU */
-        .teacher-link { margin-top: 25px; padding-top: 20px; border-top: 1px dashed #cbd5e1; }
-        .teacher-link a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: 0.3s; }
-        .teacher-link a:hover { color: #2563eb; }
+        .guru-link { margin-top: 30px; border-top: 1px dashed #ccc; padding-top: 15px; }
+        .guru-link a { text-decoration: none; color: #94a3b8; font-size: 14px; }
+        .guru-link a:hover { color: #2563eb; }
 
-        /* FOOTER STYLE */
-        .footer { text-align: center; font-size: 0.75rem; color: #64748b; margin-top: 3rem; line-height: 1.6; opacity: 0.8; }
-        .footer strong { color: #cbd5e1; font-weight: 600; }
+        /* FOOTER */
+        .footer { 
+            margin-top: 40px; 
+            text-align: center; 
+            color: #64748b; 
+            font-size: 12px; 
+            line-height: 1.6; 
+        }
+        .footer strong { color: #cbd5e1; }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <div class="brand-title">
-            <h1>INFORMATIKA</h1>
-            <h3>SMA NEGERI 1 MUNCAR</h3>
-            <div class="divider"></div>
-        </div>
-        
+    <div class="card">
+        <h1>INFORMATIKA</h1>
+        <h3>SMA NEGERI 1 MUNCAR</h3>
+        <div class="garis"></div>
+
         <label>Pilih Kelas:</label>
         <select id="pilihKelas" onchange="filterSiswa()">
             <option value="">-- Pilih Kelas --</option>
-        </
+        </select>
+
+        <label>Nama Kamu:</label>
+        <select id="pilihNama" disabled>
+            <option value="">-- Pilih Nama Dulu --</option>
+        </select>
+
+        <button class="btn-masuk" onclick="login()">MASUK KELAS 🚀</button>
+
+        <div class="guru-link">
+            <a href="#" onclick="aksesGuru()">🔒 Login Guru (Admin)</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2025 usudo.id | Guru Informatika<br>
+        Design By ❤️ <strong>Agus Tjakra</strong> | Powered By <strong>Cloudflare & Self-Hosted</strong>
+    </div>
+
+    <script src="siswa.js"></script>
+
+    <script>
+        // 1. CEK APAKAH FILE SISWA.JS TERBACA
+        if (typeof SISWA_BARU === 'undefined') {
+            alert("⚠️ PERHATIAN: Data Siswa tidak terbaca!\n\nPastikan nama file di komputer Bapak adalah 'siswa.js' (bukan 'siswa (1).js' atau 'siswa.js.txt').");
+        } 
+        else {
+            // JIKA TERBACA, JALANKAN PROGRAM:
+            
+            const daftarKelas = [...new Set(SISWA_BARU.map(s => s.kelas))].sort();
+            const selectKelas = document.getElementById('pilihKelas');
+            const selectNama = document.getElementById('pilihNama');
+
+            // Isi Dropdown Kelas
+            daftarKelas.forEach(kls => {
+                let opt = document.createElement('option');
+                opt.value = kls;
+                opt.innerText = kls;
+                selectKelas.appendChild(opt);
+            });
+
+            // Fungsi Filter Nama
+            window.filterSiswa = function() {
+                const kelasDipilih = selectKelas.value;
+                selectNama.innerHTML = '<option value="">-- Pilih Nama --</option>';
+                
+                if (kelasDipilih) {
+                    selectNama.disabled = false;
+                    const siswaDiKelas = SISWA_BARU.filter(s => s.kelas === kelasDipilih);
+                    
+                    siswaDiKelas.forEach(s => {
+                        let opt = document.createElement('option');
+                        opt.value = s.nama;
+                        opt.innerText = s.nama;
+                        selectNama.appendChild(opt);
+                    });
+                } else {
+                    selectNama.disabled = true;
+                }
+            };
+
+            // Fungsi Login Siswa
+            window.login = function() {
+                const kls = selectKelas.value;
+                const nama = selectNama.value;
+
+                if (!kls || !nama) {
+                    alert("Harap pilih Kelas dan Nama dulu ya!");
+                    return;
+                }
+
+                // Simpan Sesi
+                localStorage.setItem('siswa_nama', nama);
+                localStorage.setItem('siswa_kelas', kls);
+
+                // Pindah Halaman
+                window.location.href = 'dashboard.html';
+            };
+        }
+
+        // Fungsi Login Guru (Password: MERDEKA)
+        window.aksesGuru = function() {
+            let pass = prompt("Masukkan Sandi Guru:");
+            if(pass === "MERDEKA") {
+                window.location.href = "admin.html";
+            } else {
+                if(pass) alert("Sandi salah!");
+            }
+        };
+    </script>
+</body>
+</html>
