@@ -15,6 +15,10 @@
         button.primary:hover { background: #1d4ed8; }
         button.print { background: #475569; color: white; border: none; }
 
+        /* Style Tombol Kembali */
+        .btn-back { background: #64748b; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-back:hover { background: #475569; }
+
         table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
         th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; }
         th { background: #0f172a; color: white; }
@@ -36,14 +40,16 @@
 <div class="container">
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <h1>👨‍🏫 Panel Monitoring Guru</h1>
-        <button onclick="window.location.href='index.html'" class="no-print" style="background:#ef4444; color:white; border:none; padding:8px 15px; border-radius:6px; cursor:pointer;">Keluar</button>
+        <button onclick="window.location.href='guru_dashboard.html'" class="btn-back no-print">
+            ⬅️ Kembali ke Menu
+        </button>
     </div>
 
     <div class="toolbar">
         <label style="align-self: center; font-weight:bold;">Filter Kelas:</label>
         <select id="filterKelas" onchange="loadData()">
             <option value="ALL">-- Tampilkan Semua --</option>
-            </select>
+        </select>
         
         <button class="primary" onclick="loadData()">🔄 Refresh Data</button>
         <button class="print" onclick="window.print()">🖨️ Cetak Laporan</button>
@@ -72,7 +78,7 @@
 
 <script>
     // ==========================================
-    // ⚠️ PASTE URL APPS SCRIPT BAPAK DI BAWAH INI
+    // ⚠️ URL APPS SCRIPT BAPAK (Sesuai Kode Sebelumnya)
     // ==========================================
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAh308PQxtnUoc2cp2goW7FJh2faFeO-9pebfD9Pt--_LfaoxiS8L5pLqDUhcC5Ky0/exec'; 
 
@@ -174,5 +180,3 @@
 
 </body>
 </html>
-
-
