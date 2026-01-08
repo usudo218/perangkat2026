@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Guru - SMAN 1 Muncar</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .container { text-align: center; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 90%; max-width: 600px; }
+        h1 { color: #1e293b; margin-bottom: 10px; }
+        p { color: #64748b; margin-bottom: 30px; }
+        
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        
+        .card { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 25px; cursor: pointer; transition: 0.3s; text-decoration: none; color: inherit; display: block; }
+        .card:hover { border-color: #2563eb; transform: translateY(-5px); background: #eff6ff; }
+        
+        .icon { font-size: 3rem; display: block; margin-bottom: 15px; }
+        .title { font-weight: bold; font-size: 1.2rem; color: #334155; display: block; margin-bottom: 5px; }
+        .desc { font-size: 0.9rem; color: #94a3b8; }
+
+        .btn-logout { margin-top: 30px; background: #ef4444; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        .btn-logout:hover { background: #dc2626; }
+
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>👨‍🏫 Ruang Guru</h1>
+        <p>Selamat Datang, Pak Agus Tjakra</p>
+
+        <div class="menu-grid">
+            <a href="admin.html" class="card">
+                <span class="icon">📊</span>
+                <span class="title">Monitoring LKPD</span>
+                <span class="desc">Lihat nilai & jawaban siswa real-time dari Google Sheets.</span>
+            </a>
+
+            <a href="guru_kbm.html" class="card">
+                <span class="icon">📝</span>
+                <span class="title">Perangkat KBM</span>
+                <span class="desc">Jurnal, Absensi, dan Rekap Nilai Harian.</span>
+            </a>
+        </div>
+
+        <button class="btn-logout" onclick="window.location.href='index.html'">Keluar</button>
+    </div>
+
+</body>
+</html>
