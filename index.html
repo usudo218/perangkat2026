@@ -1,94 +1,25 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SMAN 1 MUNCAR</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+<button onclick="login()">MASUK KELAS 🚀</button>
         
-        .login-card { background: white; padding: 2.5rem; border-radius: 16px; width: 100%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
-        
-        /* HEADER STYLE */
-        .brand-title { text-align: center; margin-bottom: 2rem; }
-        .brand-title h1 { margin: 0; color: #1e293b; font-size: 1.8rem; letter-spacing: 2px; font-weight: 800; }
-        .brand-title h3 { margin: 5px 0 0 0; color: #64748b; font-size: 1rem; font-weight: 500; text-transform: uppercase; }
-        .divider { height: 4px; width: 50px; background: #2563eb; margin: 15px auto; border-radius: 2px; }
-
-        select, button { width: 100%; padding: 14px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 16px; box-sizing: border-box; }
-        select:focus { outline: 2px solid #2563eb; border-color: #2563eb; }
-        
-        button { background: #2563eb; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        button:hover { background: #1d4ed8; transform: translateY(-2px); }
-
-        /* FOOTER STYLE */
-        .footer { text-align: center; font-size: 0.85rem; color: #94a3b8; margin-top: 2rem; line-height: 1.6; }
-        .footer strong { color: #cbd5e1; }
-    </style>
-</head>
-<body>
-
-    <div class="login-card">
-        <div class="brand-title">
-            <h1>INFORMATIKA</h1>
-            <div class="divider"></div>
-            <h3>SMA NEGERI 1 MUNCAR</h3>
+        <div style="margin-top: 15px; text-align: center;">
+            <a href="#" onclick="aksesGuru()" style="font-size: 0.8rem; color: #64748b; text-decoration: none;">
+                🔒 Akses Guru
+            </a>
         </div>
-        
-        <label style="font-weight: 600; color: #334155; display:block; margin-bottom:5px;">Pilih Kelas:</label>
-        <select id="pilihKelas" onchange="filterSiswa()">
-            <option value="">-- Pilih Kelas --</option>
-        </select>
-
-        <label style="font-weight: 600; color: #334155; display:block; margin-bottom:5px;">Nama Kamu:</label>
-        <select id="pilihNama" disabled>
-            <option value="">-- Pilih Nama --</option>
-        </select>
-
-        <button onclick="login()">MASUK KELAS 🚀</button>
-    </div>
-
-    <div class="footer">
-        © 2025 usudo.id | Guru Informatika<br>
-        Design By ❤️ <strong>Agus Tjakra</strong> | Powered By <strong>Cloudflare & Self-Hosted</strong>
     </div>
 
     <script src="siswa.js"></script> 
-    
     <script>
-        // DATA SISWA LOGIC
-        const daftarKelas = [...new Set(SISWA_BARU.map(s => s.kelas))].sort();
-        const selectKelas = document.getElementById('pilihKelas');
-        const selectNama = document.getElementById('pilihNama');
+        // ... kode logika siswa tetap sama ...
 
-        daftarKelas.forEach(kls => {
-            let opt = document.createElement('option');
-            opt.value = kls; opt.innerText = kls;
-            selectKelas.appendChild(opt);
-        });
-
-        function filterSiswa() {
-            const kelasDipilih = selectKelas.value;
-            selectNama.innerHTML = '<option value="">-- Pilih Nama --</option>';
-            selectNama.disabled = true;
-            if (kelasDipilih) {
-                const siswaDiKelas = SISWA_BARU.filter(s => s.kelas === kelasDipilih);
-                siswaDiKelas.forEach(s => {
-                    let opt = document.createElement('option');
-                    opt.value = s.nama; opt.innerText = s.nama;
-                    selectNama.appendChild(opt);
-                });
-                selectNama.disabled = false;
+        // TAMBAHAN: FUNGSI AKSES GURU
+        function aksesGuru() {
+            let pass = prompt("Masukkan Sandi Guru:");
+            // Ganti "MERDEKA" dengan password rahasia Bapak
+            if(pass === "MERDEKA") {
+                window.location.href = "admin.html"; // Pindah ke halaman Admin
+            } else {
+                alert("Sandi salah!");
             }
-        }
-
-        function login() {
-            const kls = selectKelas.value;
-            const nama = selectNama.value;
-            if (!kls || !nama) { alert("Harap pilih Kelas dan Nama!"); return; }
-            localStorage.setItem('siswa_nama', nama);
-            localStorage.setItem('siswa_kelas', kls);
-            window.location.href = 'dashboard.html';
         }
     </script>
 </body>
