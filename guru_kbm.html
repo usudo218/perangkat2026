@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <script>
+    // SCRIPT PENGECEKAN HAK AKSES GURU (ANTI-USIR)
+    const role = localStorage.getItem('user_role');
+    const nama = localStorage.getItem('siswa_nama');
+
+    // Jika yang masuk bukan Guru DAN bukan siswa (kosong melompong), baru ditendang.
+    if (role !== 'guru' && !nama) {
+        alert("⚠️ Akses Ditolak: Harap Login Terlebih Dahulu!");
+        window.location.href = 'index.html';
+    }
+    
+    // Jika Guru yang masuk, pastikan variabel nama terisi agar kode bawah tidak error
+    if (role === 'guru' && !nama) {
+        localStorage.setItem('siswa_nama', 'ADMINISTRATOR');
+    }
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PERANGKAT PEMBELAJARAN SMAN 1 MUNCAR</title>
@@ -525,6 +541,7 @@ if (typeof SISWA_BARU !== 'undefined') {
 </script>
 </body>
 </html>
+
 
 
 
