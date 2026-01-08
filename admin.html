@@ -3,180 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Guru - Pak Cokro</title>
+    <title>Monitoring Jawaban</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; padding: 20px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #1e293b; border-bottom: 2px solid #2563eb; padding-bottom: 10px; }
-        
-        .toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; background: #e2e8f0; padding: 15px; border-radius: 8px; }
+        h1 { border-bottom: 2px solid #2563eb; padding-bottom: 10px; color: #1e293b; }
+        .toolbar { display: flex; gap: 10px; margin-bottom: 20px; background: #e2e8f0; padding: 15px; border-radius: 8px; flex-wrap: wrap; }
         select, button { padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer; }
-        button.primary { background: #2563eb; color: white; border: none; font-weight: bold; }
-        button.primary:hover { background: #1d4ed8; }
-        button.print { background: #475569; color: white; border: none; }
-
-        /* Style Tombol Kembali */
-        .btn-back { background: #64748b; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-back:hover { background: #475569; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+        .primary { background: #2563eb; color: white; border: none; font-weight: bold; }
+        .primary:hover { background: #1d4ed8; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; }
         th { background: #0f172a; color: white; }
-        tr:nth-child(even) { background: #f8fafc; }
-        tr:hover { background: #e0f2fe; }
-        
-        .loading { text-align: center; padding: 40px; color: #64748b; font-size: 1.2rem; display: none; }
+        tr:nth-child(even) { background: #f1f5f9; }
         .badge { background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8em; }
-
-        @media print {
-            .toolbar, .no-print { display: none; }
-            body { background: white; }
-            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
-        }
+        .btn-back { background: #64748b; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h1>👨‍🏫 Panel Monitoring Guru</h1>
-        <button onclick="window.location.href='guru_dashboard.html'" class="btn-back no-print">
-            ⬅️ Kembali ke Menu
-        </button>
+        <h1>👨‍🏫 Monitoring LKPD</h1>
+        <a href="guru_dashboard.html" class="btn-back">⬅️ Kembali</a>
     </div>
 
     <div class="toolbar">
-        <label style="align-self: center; font-weight:bold;">Filter Kelas:</label>
-        <select id="filterKelas" onchange="loadData()">
-            <option value="ALL">-- Tampilkan Semua --</option>
-        </select>
-        
+        <label style="align-self:center; font-weight:bold;">Filter:</label>
+        <select id="filterKelas" onchange="loadData()"><option value="ALL">-- Semua Kelas --</option></select>
         <button class="primary" onclick="loadData()">🔄 Refresh Data</button>
-        <button class="print" onclick="window.print()">🖨️ Cetak Laporan</button>
     </div>
 
-    <div id="statusMsg" class="loading">Menghubungkan...</div>
+    <div id="statusMsg" style="text-align:center; padding:20px; color:#64748b;">⏳ Menghubungkan ke Server...</div>
 
     <table id="dataTable">
-        <thead>
-            <tr>
-                <th width="15%">Waktu</th>
-                <th width="10%">Kode LKPD</th>
-                <th width="20%">Nama Siswa</th>
-                <th width="10%">Kelas</th>
-                <th>Ringkasan Jawaban</th>
-            </tr>
-        </thead>
-        <tbody>
-            </tbody>
+        <thead><tr><th>Waktu</th><th>LKPD</th><th>Nama Siswa</th><th>Kelas</th><th>Jawaban</th></tr></thead>
+        <tbody></tbody>
     </table>
-    
-    <div style="margin-top: 30px; text-align: center; font-size: 0.8rem; color: #94a3b8;">
-        Panel Guru © 2025 usudo.id
-    </div>
 </div>
 
+<script src="siswa.js"></script>
 <script>
-    // ==========================================
-    // ⚠️ URL APPS SCRIPT BAPAK (Sesuai Kode Sebelumnya)
-    // ==========================================
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAh308PQxtnUoc2cp2goW7FJh2faFeO-9pebfD9Pt--_LfaoxiS8L5pLqDUhcC5Ky0/exec'; 
 
-    // Daftar Kelas Manual
-    const listKelas = ["KELAS 10-1", "KELAS 10-2", "KELAS 10-3", "KELAS 10-4", "KELAS 10-5", "KELAS 10-6", "KELAS 10-7"];
-    
-    // Isi Dropdown Kelas Otomatis
-    const selectFilter = document.getElementById('filterKelas');
-    listKelas.forEach(k => {
-        let opt = document.createElement('option');
-        opt.value = k;
-        opt.innerText = k;
-        selectFilter.appendChild(opt);
-    });
+    // Isi Filter dari siswa.js
+    if(typeof SISWA_BARU !== 'undefined') {
+        let kls = [...new Set(SISWA_BARU.map(s=>s.kelas))].sort();
+        kls.forEach(k => {
+            let opt = document.createElement('option'); opt.value = k; opt.innerText = k;
+            document.getElementById('filterKelas').appendChild(opt);
+        });
+    }
 
     function loadData() {
         const tbody = document.querySelector('#dataTable tbody');
         const status = document.getElementById('statusMsg');
         const filter = document.getElementById('filterKelas').value;
 
-        tbody.innerHTML = ''; 
-        status.style.display = 'block';
-        status.innerHTML = "Sedang menghubungi Server Google... ⏳";
-
-        // Tambahkan ?action=read untuk memastikan mode baca
+        tbody.innerHTML = ''; status.style.display = 'block';
+        
         fetch(SCRIPT_URL + "?action=read")
-        .then(res => {
-            if (!res.ok) { throw new Error("Gagal Akses (Cek Izin Deployment 'Anyone')"); }
-            return res.text(); // Ambil text dulu biar aman
-        })
-        .then(text => {
-            let response;
-            try {
-                response = JSON.parse(text);
-            } catch (e) {
-                console.error("Bukan JSON:", text);
-                throw new Error("Data rusak atau Izin Akses Ditolak. Cek Console.");
-            }
-
-            status.style.display = 'none'; 
-            
+        .then(res => res.json())
+        .then(response => {
+            status.style.display = 'none';
             if(response.status === 'success') {
                 let data = response.data;
-                
-                // Filter Data Lokal
-                if(filter !== 'ALL') {
-                    // Cek huruf besar/kecil (case insensitive) agar aman
-                    data = data.filter(row => row.kelas && row.kelas.toUpperCase() === filter.toUpperCase());
-                }
+                if(filter !== 'ALL') data = data.filter(row => row.kelas === filter);
 
                 if(data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Belum ada data.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Belum ada data masuk.</td></tr>';
                     return;
                 }
-
                 data.forEach(row => {
-                    let tr = document.createElement('tr');
-                    
-                    // Format Tanggal
                     let dateStr = row.timestamp ? new Date(row.timestamp).toLocaleString('id-ID') : '-';
-                    
-                    // Format Jawaban
                     let displayJawaban = "";
                     try {
                         let jObj = JSON.parse(row.jawaban);
-                        displayJawaban = Object.entries(jObj)
-                            .map(([k, v]) => `<b>${k}:</b> ${v}`)
-                            .join("<br>"); 
-                    } catch(e) {
-                        displayJawaban = row.jawaban; 
-                    }
+                        displayJawaban = Object.entries(jObj).map(([k, v]) => `<b>${k}:</b> ${v}`).join("<br>"); 
+                    } catch(e) { displayJawaban = row.jawaban; }
 
-                    tr.innerHTML = `
-                        <td><small>${dateStr}</small></td>
-                        <td><span class="badge">${row.kode || '-'}</span></td>
-                        <td><strong>${row.nama || '-'}</strong></td>
-                        <td>${row.kelas || '-'}</td>
-                        <td style="font-size:0.85em;">${displayJawaban}</td>
-                    `;
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `<td><small>${dateStr}</small></td><td><span class="badge">${row.kode||'-'}</span></td><td><strong>${row.nama||'-'}</strong></td><td>${row.kelas||'-'}</td><td style="font-size:0.9em">${displayJawaban}</td>`;
                     tbody.appendChild(tr);
                 });
-
-            } else {
-                status.style.display = 'block';
-                status.innerHTML = "Error dari Google: " + response.error;
-            }
+            } else { alert("Gagal mengambil data: " + response.error); }
         })
         .catch(err => {
+            status.innerHTML = "❌ Gagal Terhubung. Cek Internet.";
             console.error(err);
-            status.style.display = 'block';
-            status.innerHTML = "❌ GAGAL TERHUBUNG: " + err.message;
-            alert("Gagal koneksi!\n\n1. Pastikan Internet Lancar.\n2. Pastikan Deployment Apps Script aksesnya 'Siapa Saja (Anyone)'.");
         });
     }
-
-    // Load data otomatis saat dibuka
     loadData();
 </script>
-
 </body>
 </html>
