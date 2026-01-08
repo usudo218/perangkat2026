@@ -171,15 +171,19 @@
         // Di dalam file index.html bagian bawah
 // Di dalam <script> file index.html
 
+// GANTI BAGIAN FUNGSI AKSES GURU DI INDEX.HTML
 window.aksesGuru = function() {
     let pass = prompt("Masukkan Sandi Guru:");
     
-    if(pass === "MERDEKA") { // Password Bapak
-        // 1. SIMPAN IDENTITAS GURU (PENTING!)
-        localStorage.setItem('user_role', 'agustjakra'); 
-        localStorage.setItem('guru_nama', '1212'); // Bisa ganti nama Bapak
+    if(pass === "MERDEKA") { 
+        // 1. Set Identitas Guru (Untuk sistem baru)
+        localStorage.setItem('user_role', 'guru');
+        
+        // 2. [TRIK] Set Identitas Siswa Palsu (Agar sistem lama tidak mengusir Bapak)
+        localStorage.setItem('siswa_nama', 'ADMINISTRATOR (GURU)');
+        localStorage.setItem('siswa_kelas', 'RUANG GURU');
 
-        // 2. Masuk ke Dashboard
+        // 3. Masuk ke Dashboard
         window.location.href = "guru_dashboard.html";
     } else {
         if(pass) alert("Sandi salah!");
@@ -188,5 +192,6 @@ window.aksesGuru = function() {
     </script>
 </body>
 </html>
+
 
 
