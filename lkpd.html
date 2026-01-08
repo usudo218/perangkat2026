@@ -5,83 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lembar Kerja Siswa</title>
     <style>
-        body { font-family: monospace; background: #f8fafc; margin: 0; padding-bottom: 100px; }
+        body { font-family: monospace; background: #f1f5f9; margin: 0; padding-bottom: 120px; /* Padding extra agar tidak ketutup menu bawah */ }
         
-        /* HEADER NAVIGASI (BARU) */
-        .top-nav {
-            background: #ffffff;
-            padding: 15px 20px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky; /* Agar tetap menempel di atas saat scroll */
-            top: 0;
-            z-index: 100;
-        }
-
-        .btn-top-back {
-            background: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            color: #334155;
-            padding: 8px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: 0.2s;
-            text-decoration: none; /* Agar tampilan seperti tombol */
-            font-size: 0.9rem;
-        }
-
+        .top-nav { background: #ffffff; padding: 15px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-top-back { background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
         .btn-top-back:hover { background: #e2e8f0; border-color: #94a3b8; }
 
-        .container { 
-            max-width: 800px; 
-            margin: 20px auto; 
-            background: white; 
-            padding: 40px; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-        }
-        
+        .container { max-width: 800px; margin: 30px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         h1, h2 { color: #1e293b; margin-top: 0; }
-        .badge { background: #dbeafe; color: #1e40af; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.8em; }
+        .badge { background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8em; }
         
-        /* Soal Styles */
-        .soal-box { background: #f1f5f9; padding: 15px; margin-bottom: 20px; border-left: 4px solid #3b82f6; }
-        input, textarea { width: 100%; padding: 10px; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-family: inherit; }
+        .soal-box { background: #f8fafc; padding: 20px; margin-bottom: 25px; border-left: 5px solid #3b82f6; border-radius: 4px; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 1rem; }
+        input:focus, textarea:focus { outline: 2px solid #3b82f6; border-color: #3b82f6; }
         
-        /* Menu Simpan (Floating Bar) */
-        .floating-menu {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: white; padding: 15px;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
-            display: flex; justify-content: space-between; align-items: center;
-            max-width: 800px; margin: 0 auto;
-            border-top: 1px solid #e2e8f0;
-        }
-        .btn-save { background: #16a34a; color: white; border: none; padding: 10px 30px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3); }
-        .btn-save:hover { background: #15803d; }
+        .floating-menu { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto; border-top: 1px solid #e2e8f0; z-index: 99; }
+        .btn-save { background: #16a34a; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3); transition: 0.2s; }
+        .btn-save:hover { background: #15803d; transform: translateY(-2px); }
+
+        /* FOOTER STYLE */
+        .footer-global { text-align: center; margin-top: 40px; color: #94a3b8; font-size: 0.85rem; line-height: 1.6; font-family: 'Segoe UI', sans-serif; }
     </style>
 </head>
 <body>
 
     <div class="top-nav">
-        <button class="btn-top-back" onclick="window.location.href='dashboard.html'">
-            ⬅️ Dashboard
-        </button>
-        <div style="font-weight: bold; color: #475569;">
-            LKPD Digital
-        </div>
+        <button class="btn-top-back" onclick="window.location.href='dashboard.html'">⬅️ Dashboard</button>
+        <div style="font-weight: bold; color: #475569; font-family: 'Segoe UI', sans-serif;">LKPD Digital</div>
     </div>
 
     <div class="container">
         <header style="border-bottom: 2px dashed #cbd5e1; padding-bottom: 20px; margin-bottom: 30px;">
             <h1 id="judulLKPD">LKPD 1: AGEN DATA</h1>
-            <p>
+            <p style="font-family: 'Segoe UI', sans-serif;">
                 Agen: <span id="namaSiswa" class="badge">-</span> | 
                 Kelas: <span id="kelasSiswa" class="badge">-</span>
             </p>
@@ -92,33 +48,31 @@
                 <label><strong>1. Identitas Tim (Nama Kelompok)</strong></label>
                 <input type="text" name="nama_tim" placeholder="Contoh: Garuda Cyber">
             </div>
-
             <div class="soal-box">
                 <label><strong>2. Temuan Data Rahasia</strong></label>
                 <p><small>Sebutkan satu data yang tidak boleh disebar sembarangan:</small></p>
                 <input type="text" name="soal_1">
             </div>
-
             <div class="soal-box">
                 <label><strong>3. Analisa Masalah (Esai)</strong></label>
                 <p><small>Mengapa kita harus melindungi data pribadi teman?</small></p>
                 <textarea name="soal_2" rows="4"></textarea>
             </div>
         </form>
+
+        <div class="footer-global">
+            © 2025 usudo.id | Guru Informatika<br>
+            Design By ❤️ <strong>Agus Tjakra</strong> | Powered By <strong>Cloudflare & Self-Hosted</strong>
+        </div>
     </div>
 
     <div class="floating-menu">
-        <button class="btn-top-back" onclick="window.location.href='dashboard.html'">
-            ⬅️ Batal
-        </button>
-        
-        <span id="statusSave" style="color: #64748b; font-size: 0.9em; display:none;">Tersimpan</span>
-        
+        <button class="btn-top-back" onclick="window.location.href='dashboard.html'">⬅️ Batal</button>
+        <span id="statusSave" style="color: #64748b; font-size: 0.9em; display:none; font-family: 'Segoe UI', sans-serif;">Tersimpan</span>
         <button class="btn-save" onclick="simpanData()">💾 SIMPAN JAWABAN</button>
     </div>
 
     <script>
-        // Cek Login & Set Nama
         const nama = localStorage.getItem('siswa_nama');
         const kelas = localStorage.getItem('siswa_kelas');
         if(!nama) window.location.href = 'index.html';
@@ -126,21 +80,31 @@
         document.getElementById('namaSiswa').innerText = nama;
         document.getElementById('kelasSiswa').innerText = kelas;
 
-        // URL GOOGLE SCRIPT (GANTI INI NANTI)
-        const SCRIPT_URL = 'URL_APPS_SCRIPT_BAPAK_DISINI'; 
+        const SCRIPT_URL = 'GANTI_DENGAN_URL_APPS_SCRIPT_BAPAK'; // <--- Jangan Lupa Ganti
 
         function simpanData() {
             const btn = document.querySelector('.btn-save');
-            btn.innerText = "⏳ Mengirim...";
-            btn.disabled = true;
+            btn.innerText = "⏳ Mengirim..."; btn.disabled = true;
 
             const form = document.getElementById('formLKPD');
-            const formData = new FormData(form);
-            const dataJawaban = Object.fromEntries(formData.entries());
+            const dataJawaban = Object.fromEntries(new FormData(form).entries());
 
             const payload = {
                 kode_lkpd: localStorage.getItem('active_lkpd') || 'LKPD-UMUM',
-                nama: nama,
-                kelas: kelas,
-                nilai: "-",
-                jawaban: data
+                nama: nama, kelas: kelas, nilai: "-", jawaban: dataJawaban
+            };
+
+            fetch(SCRIPT_URL, {
+                method: 'POST', mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                alert("✅ Berhasil Disimpan!");
+                btn.innerText = "💾 SIMPAN JAWABAN"; btn.disabled = false;
+            }).catch(() => {
+                alert("⚠️ Gagal koneksi."); btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
