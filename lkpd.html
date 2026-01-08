@@ -3,73 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lembar Kerja Siswa</title>
+    <title>LKPD Digital</title>
     <style>
-        body { font-family: monospace; background: #f1f5f9; margin: 0; padding-bottom: 120px; /* Padding extra agar tidak ketutup menu bawah */ }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding-bottom: 100px; }
+        .top-nav { background: white; padding: 15px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-back { background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 8px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; font-weight: bold; }
         
-        .top-nav { background: #ffffff; padding: 15px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .btn-top-back { background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
-        .btn-top-back:hover { background: #e2e8f0; border-color: #94a3b8; }
-
-        .container { max-width: 800px; margin: 30px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        h1, h2 { color: #1e293b; margin-top: 0; }
-        .badge { background: #dbeafe; color: #1e40af; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8em; }
-        
+        .container { max-width: 800px; margin: 30px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 90%; }
         .soal-box { background: #f8fafc; padding: 20px; margin-bottom: 25px; border-left: 5px solid #3b82f6; border-radius: 4px; }
-        input, textarea { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 1rem; }
-        input:focus, textarea:focus { outline: 2px solid #3b82f6; border-color: #3b82f6; }
-        
-        .floating-menu { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto; border-top: 1px solid #e2e8f0; z-index: 99; }
-        .btn-save { background: #16a34a; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3); transition: 0.2s; }
-        .btn-save:hover { background: #15803d; transform: translateY(-2px); }
+        input, textarea { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
+        input:focus, textarea:focus { outline: 2px solid #3b82f6; }
 
-        /* FOOTER STYLE */
-        .footer-global { text-align: center; margin-top: 40px; color: #94a3b8; font-size: 0.85rem; line-height: 1.6; font-family: 'Segoe UI', sans-serif; }
+        .floating-menu { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); text-align: center; border-top: 1px solid #e2e8f0; }
+        .btn-save { background: #16a34a; color: white; border: none; padding: 12px 40px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3); }
+        .btn-save:hover { background: #15803d; }
+        .btn-save:disabled { background: #cbd5e1; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
     <div class="top-nav">
-        <button class="btn-top-back" onclick="window.location.href='dashboard.html'">⬅️ Dashboard</button>
-        <div style="font-weight: bold; color: #475569; font-family: 'Segoe UI', sans-serif;">LKPD Digital</div>
+        <a href="dashboard.html" class="btn-back">⬅️ Batal</a>
+        <div style="font-weight: bold;">LKPD: AGEN DATA</div>
     </div>
 
     <div class="container">
-        <header style="border-bottom: 2px dashed #cbd5e1; padding-bottom: 20px; margin-bottom: 30px;">
-            <h1 id="judulLKPD">LKPD 1: AGEN DATA</h1>
-            <p style="font-family: 'Segoe UI', sans-serif;">
-                Agen: <span id="namaSiswa" class="badge">-</span> | 
-                Kelas: <span id="kelasSiswa" class="badge">-</span>
-            </p>
-        </header>
+        <div style="margin-bottom:30px; border-bottom:1px dashed #ccc; padding-bottom:10px;">
+            <h1 style="margin:0">Misi 1: Analisis Data</h1>
+            <p>Siswa: <strong id="namaSiswa">-</strong> (<span id="kelasSiswa">-</span>)</p>
+        </div>
 
         <form id="formLKPD">
             <div class="soal-box">
-                <label><strong>1. Identitas Tim (Nama Kelompok)</strong></label>
-                <input type="text" name="nama_tim" placeholder="Contoh: Garuda Cyber">
+                <label><strong>1. Nama Kelompok</strong></label>
+                <input type="text" name="nama_tim" placeholder="Contoh: Garuda Cyber" required>
             </div>
             <div class="soal-box">
-                <label><strong>2. Temuan Data Rahasia</strong></label>
-                <p><small>Sebutkan satu data yang tidak boleh disebar sembarangan:</small></p>
-                <input type="text" name="soal_1">
+                <label><strong>2. Temuan Data Pribadi</strong></label>
+                <p><small>Sebutkan satu data yang menurutmu bersifat RAHASIA:</small></p>
+                <input type="text" name="soal_1" required>
             </div>
             <div class="soal-box">
-                <label><strong>3. Analisa Masalah (Esai)</strong></label>
+                <label><strong>3. Analisa Masalah</strong></label>
                 <p><small>Mengapa kita harus melindungi data pribadi teman?</small></p>
-                <textarea name="soal_2" rows="4"></textarea>
+                <textarea name="soal_2" rows="4" required></textarea>
             </div>
         </form>
-
-        <div class="footer-global">
-            © 2025 usudo.id | Guru Informatika<br>
-            Design By ❤️ <strong>Agus Tjakra</strong> | Powered By <strong>Cloudflare & Self-Hosted</strong>
-        </div>
     </div>
 
     <div class="floating-menu">
-        <button class="btn-top-back" onclick="window.location.href='dashboard.html'">⬅️ Batal</button>
-        <span id="statusSave" style="color: #64748b; font-size: 0.9em; display:none; font-family: 'Segoe UI', sans-serif;">Tersimpan</span>
-        <button class="btn-save" onclick="simpanData()">💾 SIMPAN JAWABAN</button>
+        <button class="btn-save" onclick="simpanData()">💾 KIRIM JAWABAN</button>
     </div>
 
     <script>
@@ -80,17 +63,23 @@
         document.getElementById('namaSiswa').innerText = nama;
         document.getElementById('kelasSiswa').innerText = kelas;
 
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAh308PQxtnUoc2cp2goW7FJh2faFeO-9pebfD9Pt--_LfaoxiS8L5pLqDUhcC5Ky0/exec'; // <--- Jangan Lupa Ganti
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAh308PQxtnUoc2cp2goW7FJh2faFeO-9pebfD9Pt--_LfaoxiS8L5pLqDUhcC5Ky0/exec';
 
         function simpanData() {
             const btn = document.querySelector('.btn-save');
-            btn.innerText = "⏳ Mengirim..."; btn.disabled = true;
-
             const form = document.getElementById('formLKPD');
+            
+            // Validasi manual sederhana
+            if(!form.checkValidity()) {
+                alert("Mohon isi semua jawaban sebelum mengirim!");
+                return;
+            }
+
+            btn.innerText = "⏳ Mengirim..."; btn.disabled = true;
             const dataJawaban = Object.fromEntries(new FormData(form).entries());
 
             const payload = {
-                kode_lkpd: localStorage.getItem('active_lkpd') || 'LKPD-UMUM',
+                kode_lkpd: localStorage.getItem('active_lkpd') || 'LKPD-01',
                 nama: nama, kelas: kelas, nilai: "-", jawaban: dataJawaban
             };
 
@@ -99,17 +88,12 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             }).then(() => {
-                alert("✅ Berhasil Disimpan!");
-                btn.innerText = "💾 SIMPAN JAWABAN"; btn.disabled = false;
+                alert("✅ JAWABAN BERHASIL TERKIRIM!");
+                window.location.href = 'dashboard.html';
             }).catch(() => {
-                alert("⚠️ Gagal koneksi."); btn.disabled = false;
+                alert("⚠️ Gagal koneksi internet."); btn.innerText = "💾 KIRIM JAWABAN"; btn.disabled = false;
             });
         }
     </script>
 </body>
 </html>
-
-
-
-
-
