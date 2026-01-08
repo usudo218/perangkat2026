@@ -454,52 +454,445 @@
         .catch(e=>{ btn.innerText="☁️ Simpan Data"; btn.disabled=false; alert("Gagal koneksi."); });
     }
 
-    function downloadFromCloud() {
-        if(!confirm("Data lokal akan ditimpa. Lanjutkan?")) return;
-        const btn=document.getElementById('btn-download'); btn.innerText="⏳ Fetching..."; btn.disabled=true;
-        fetch(GOOGLE_SCRIPT_URL).then(r=>r.json()).then(r=>{
-            if(r.siswa) {
-                dataSiswa=r.siswa; dbAbsen=r.absen||{}; dbJurnal=r.jurnal||{}; dbInfoTugas=r.tugas||{}; dbJurnalGuru=r.jurnalGuru||{};
+   <!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERANGKAT KBM GURU</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <script>
+        const role = localStorage.getItem('user_role');
+        const siswa = localStorage.getItem('siswa_nama');
+        if (role !== 'guru' && !siswa) {
+            alert("⚠️ Akses Ditolak: Harap Login Terlebih Dahulu!");
+            window.location.href = 'index.html';
+        }
+        if (role === 'guru' && !localStorage.getItem('siswa_nama')) {
+            localStorage.setItem('siswa_nama', 'PAK GURU');
+            localStorage.setItem('siswa_kelas', 'RUANG GURU');
+        }
+    </script>
+
+    <style>
+        :root { --primary: #0056b3; --bg: #f4f6f9; --white: #ffffff; --border: #ced4da; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; color: #333; }
+        
+        .btn-back-dashboard { 
+            position: fixed; bottom: 20px; right: 20px; 
+            background: #2563eb; color: white; padding: 12px 20px; 
+            border-radius: 50px; text-decoration: none; font-weight: bold; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 9999; 
+        }
+        .btn-back-dashboard:hover { background: #1d4ed8; }
+
+        .container { max-width: 1250px; margin: 20px auto; background: white; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1); width: 95%; overflow: hidden; }
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        
+        .kelas-bar { background: #e9ecef; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #ddd; }
+        .kelas-selector select { padding: 10px; font-size: 1.1rem; border: 2px solid #0056b3; border-radius: 6px; font-weight: bold; color: #0056b3; cursor: pointer; }
+        .btn-reload { background: #6c757d; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; margin-left: 10px; }
+
+        .tabs { display: flex; background: #dee2e6; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; cursor: pointer; font-weight: 600; white-space: nowrap; }
+        .tab-btn.active { background: white; color: var(--primary); border-bottom: 3px solid var(--primary); }
+        .tab-content { padding: 20px; display: none; }
+        .tab-content.active { display: block; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        th, td { padding: 8px; border: 1px solid #dee2e6; text-align: center; }
+        th { background: #f1f3f5; }
+        td { text-align: left; }
+        td.text-center { text-align: center; }
+
+        .toolbar { margin-bottom: 15px; padding: 10px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 5px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .btn { padding: 8px 15px; border: none; border-radius: 4px; color: white; cursor: pointer; }
+        .btn-green { background: #28a745; } .btn-blue { background: #007bff; } .btn-red { background: #dc3545; }
+        
+        /* TOMBOL SYNC KECIL */
+        .btn-sync { padding: 6px 12px; font-size: 0.85rem; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-sync-up { background: #e7f5ff; color: #0056b3; border-color: #0056b3; }
+        .btn-sync-up:hover { background: #cce5ff; }
+        .btn-sync-down { background: #e6fffa; color: #047481; border-color: #047481; }
+        .btn-sync-down:hover { background: #b2f5ea; }
+        .sync-group { margin-left: auto; display: flex; gap: 5px; } /* Dorong ke kanan */
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .form-group textarea, .form-group input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+
+        .bg-h { background: #d4edda; } .bg-s { background: #fff3cd; } .bg-i { background: #cce5ff; } .bg-a { background: #f8d7da; }
+        
+        .footer {
+            margin-top: 20px; text-align: center; font-size: 0.8rem; color: #94a3b8; 
+            line-height: 1.6; border-top: 1px solid #eee; padding-top: 20px;
+        }
+
+        @media print {
+            .header, .kelas-bar, .tabs, .toolbar, .btn-back-dashboard, .footer, .sync-group { display: none !important; }
+            .container { box-shadow: none; width: 100%; margin: 0; }
+            table { border: 2px solid black; } th, td { border: 1px solid black; color: black; }
+        }
+    </style>
+</head>
+<body>
+
+<a href="guru_dashboard.html" class="btn-back-dashboard">⬅️ Menu Guru</a>
+
+<div class="container">
+    <div class="header">
+        <h1>PERANGKAT KBM DIGITAL</h1>
+        <p>Jurnal, Absensi & Penilaian Harian</p>
+    </div>
+    
+    <div class="kelas-bar">
+        <div class="kelas-selector">
+            <label>📂 KELAS:</label>
+            <select id="pilih-kelas" onchange="gantiKelas()">
+                <option value="">-- MEMUAT KELAS... --</option>
+            </select>
+            <button class="btn-reload" onclick="paksaReloadSiswa()" title="Klik jika nama siswa tidak muncul">🔄 Reload</button>
+        </div>
+        <strong id="info-kelas">Pilih Kelas Dulu</strong>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="bukaTab('presensi')">📅 Presensi</button>
+        <button class="tab-btn" onclick="bukaTab('jurnal')">📖 Jurnal</button>
+        <button class="tab-btn" onclick="bukaTab('nilai')">📝 Nilai</button>
+        <button class="tab-btn" onclick="bukaTab('rekap')">📊 Rekap</button>
+        <button class="tab-btn" onclick="bukaTab('setting')">⚙️ Data</button>
+    </div>
+
+    <div id="tab-presensi" class="tab-content active">
+        <div class="toolbar">
+            <label>Tanggal: </label> <input type="date" id="tgl-harian" onchange="gantiKelas()">
+            <label style="margin-left:10px">Pertemuan:</label> 
+            <select id="pertemuan-ke" onchange="simpanJurnal()">
+                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
+                <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                <option value="9">9</option><option value="10">10</option>
+            </select>
+            <div class="sync-group">
+                <button class="btn-sync btn-sync-up" onclick="uploadData(this)">☁️ Simpan</button>
+                <button class="btn-sync btn-sync-down" onclick="downloadData(this)">⬇️ Ambil</button>
+            </div>
+        </div>
+        <table id="tabel-presensi">
+            <thead><tr><th width="5%">No</th><th>Nama Siswa</th><th width="20%">Status</th><th width="20%">Ket</th></tr></thead>
+            <tbody id="body-presensi"><tr><td colspan="4">Silakan Pilih Kelas di Atas 👆</td></tr></tbody>
+        </table>
+    </div>
+
+    <div id="tab-jurnal" class="tab-content">
+        <div class="toolbar">
+            <strong>📖 Input Jurnal Harian</strong>
+            <div class="sync-group">
+                <button class="btn-sync btn-sync-up" onclick="uploadData(this)">☁️ Simpan</button>
+                <button class="btn-sync btn-sync-down" onclick="downloadData(this)">⬇️ Ambil</button>
+            </div>
+        </div>
+        <div class="form-group"><label>Materi:</label><textarea id="jurnal-materi" rows="3" onchange="simpanJurnalGuru()"></textarea></div>
+        <div class="form-group"><label>Metode:</label><input type="text" id="jurnal-aktivitas" onchange="simpanJurnalGuru()"></div>
+        <div class="form-group"><label>Catatan:</label><textarea id="jurnal-catatan" rows="2" onchange="simpanJurnalGuru()"></textarea></div>
+        <small style="color:green" id="status-jurnal"></small>
+    </div>
+
+    <div id="tab-nilai" class="tab-content">
+        <div class="toolbar">
+            <strong>📝 Input Nilai Siswa</strong>
+            <div class="sync-group">
+                <button class="btn-sync btn-sync-up" onclick="uploadData(this)">☁️ Simpan</button>
+                <button class="btn-sync btn-sync-down" onclick="downloadData(this)">⬇️ Ambil</button>
+            </div>
+        </div>
+        <div style="overflow-x:auto">
+            <table>
+                <thead>
+                    <tr><th rowspan="2">No</th><th rowspan="2">Nama</th><th colspan="5">Tugas</th><th colspan="2">UH</th><th rowspan="2">Rata2</th></tr>
+                    <tr><th>T1</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>UH1</th><th>UH2</th></tr>
+                </thead>
+                <tbody id="body-nilai"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab-rekap" class="tab-content">
+        <div class="toolbar">
+            <button class="btn btn-green" onclick="exportExcel()">📥 Excel</button>
+            <button class="btn btn-blue" onclick="window.print()">🖨 Cetak</button>
+            <div class="sync-group">
+                <button class="btn-sync btn-sync-up" onclick="uploadData(this)">☁️ Simpan</button>
+                <button class="btn-sync btn-sync-down" onclick="downloadData(this)">⬇️ Ambil</button>
+            </div>
+        </div>
+        <div id="area-rekap">
+            <h3 style="text-align:center">REKAPITULASI PRESENSI</h3>
+            <table id="tabel-rekap">
+                <thead id="head-rekap"></thead>
+                <tbody id="body-rekap"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab-setting" class="tab-content">
+        <h3>Sinkronisasi Cloud (Google Sheet)</h3>
+        <p>Gunakan menu ini untuk sinkronisasi manual atau reset data.</p>
+        <button class="btn btn-blue" onclick="uploadData(this)">☁️ Upload Data ke Server</button>
+        <button class="btn btn-green" onclick="downloadData(this)">⬇️ Download Data dari Server</button>
+        <hr>
+        <button class="btn btn-red" onclick="resetSemua()">⚠ Hapus Semua Data Lokal</button>
+    </div>
+
+    <div class="footer">
+        © 2025 usudo.id | Guru Informatika<br>
+        Design By ❤️ <strong>Agus Tjakra</strong> | Powered By <strong>Cloudflare & Self-Hosted</strong>
+    </div>
+
+</div>
+
+<script src="siswa.js"></script>
+
+<script>
+    // URL SCRIPT BAPAK
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzAh308PQxtnUoc2cp2goW7FJh2faFeO-9pebfD9Pt--_LfaoxiS8L5pLqDUhcC5Ky0/exec";
+
+    // INIT DATA
+    const LIST_KELAS_DEFAULT = ["KELAS 10-1", "KELAS 10-2", "KELAS 10-3", "KELAS 10-4", "KELAS 10-5", "KELAS 10-6", "KELAS 10-7"];
+    let dataSiswa = JSON.parse(localStorage.getItem('app_sman1_siswa')) || [];
+    let dbAbsen = JSON.parse(localStorage.getItem('app_sman1_absen')) || {};
+    let dbJurnal = JSON.parse(localStorage.getItem('app_sman1_jurnal')) || {};
+    let dbJurnalGuru = JSON.parse(localStorage.getItem('app_sman1_jurnalguru')) || {};
+    let currentKelas = localStorage.getItem('last_kelas') || "";
+
+    document.getElementById('tgl-harian').valueAsDate = new Date();
+    
+    // Auto Load Siswa jika kosong
+    if (dataSiswa.length === 0 && typeof SISWA_BARU !== 'undefined') {
+        paksaReloadSiswa(false); 
+    } else {
+        initUI();
+    }
+
+    function initUI() {
+        const sel = document.getElementById('pilih-kelas');
+        sel.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+        let uniqueKelas = [...new Set(dataSiswa.map(s => s.kelas))].sort();
+        if (uniqueKelas.length === 0) uniqueKelas = LIST_KELAS_DEFAULT;
+        uniqueKelas.forEach(k => { sel.innerHTML += `<option value="${k}">${k}</option>`; });
+        if (currentKelas) { sel.value = currentKelas; gantiKelas(); }
+    }
+
+    function paksaReloadSiswa(tampilAlert = true) {
+        if (typeof SISWA_BARU === 'undefined') return alert("File siswa.js tidak terbaca!");
+        dataSiswa = [];
+        SISWA_BARU.forEach(m => {
+            dataSiswa.push({
+                id: 'S' + Math.floor(Math.random() * 999999),
+                nama: m.nama, kelas: m.kelas,
+                n: {t1:0,t2:0,t3:0,t4:0,t5:0,uh1:0,uh2:0}
+            });
+        });
+        localStorage.setItem('app_sman1_siswa', JSON.stringify(dataSiswa));
+        initUI();
+        if(tampilAlert) alert("Berhasil! " + dataSiswa.length + " Siswa dimuat ulang.");
+    }
+
+    function gantiKelas() {
+        currentKelas = document.getElementById('pilih-kelas').value;
+        localStorage.setItem('last_kelas', currentKelas);
+        document.getElementById('info-kelas').innerText = currentKelas || "Pilih Kelas Dulu";
+        if (!currentKelas) return;
+
+        const tgl = document.getElementById('tgl-harian').value;
+        const siswaKelas = dataSiswa.filter(s => s.kelas === currentKelas);
+        const dataHari = dbAbsen[tgl] || {};
+
+        if(siswaKelas.length === 0) {
+            document.getElementById('body-presensi').innerHTML = '<tr><td colspan="4">Data siswa tidak ditemukan.</td></tr>';
+        } else {
+            let html = "";
+            siswaKelas.forEach((s, i) => {
+                const st = dataHari[s.id] || "";
+                let bg = ""; if(st=='H') bg='bg-h'; if(st=='S') bg='bg-s'; if(st=='I') bg='bg-i'; if(st=='A') bg='bg-a';
+                html += `<tr>
+                    <td class="text-center">${i+1}</td> <td>${s.nama}</td>
+                    <td class="${bg}"><select onchange="simpanAbsen('${s.id}', this.value)" style="width:100%"><option value="">-</option><option value="H" ${st=='H'?'selected':''}>Hadir</option><option value="S" ${st=='S'?'selected':''}>Sakit</option><option value="I" ${st=='I'?'selected':''}>Izin</option><option value="A" ${st=='A'?'selected':''}>Alpha</option></select></td>
+                    <td>${st=='H'?'Hadir':st=='S'?'Sakit':st=='I'?'Izin':st=='A'?'Alpha':'-'}</td>
+                </tr>`;
+            });
+            document.getElementById('body-presensi').innerHTML = html;
+        }
+        renderNilai(); renderJurnal(); renderRekap();
+    }
+
+    function simpanAbsen(id, val) {
+        const tgl = document.getElementById('tgl-harian').value;
+        if (!dbAbsen[tgl]) dbAbsen[tgl] = {};
+        dbAbsen[tgl][id] = val;
+        localStorage.setItem('app_sman1_absen', JSON.stringify(dbAbsen));
+        gantiKelas();
+    }
+
+    function bukaTab(id) {
+        document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
+        document.getElementById('tab-' + id).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    function renderNilai() {
+        const siswaKelas = dataSiswa.filter(s => s.kelas === currentKelas);
+        let html = "";
+        siswaKelas.forEach((s, i) => {
+            if(!s.n) s.n = {t1:0,t2:0,t3:0,t4:0,t5:0,uh1:0,uh2:0};
+            const n = s.n;
+            const avg = ((n.t1+n.t2+n.t3+n.t4+n.t5+n.uh1+n.uh2)/7).toFixed(1);
+            html += `<tr><td class="text-center">${i+1}</td><td>${s.nama}</td>
+                <td><input type="number" style="width:40px" value="${n.t1}" onchange="saveN('${s.id}','t1',this.value)"></td>
+                <td><input type="number" style="width:40px" value="${n.t2}" onchange="saveN('${s.id}','t2',this.value)"></td>
+                <td><input type="number" style="width:40px" value="${n.t3}" onchange="saveN('${s.id}','t3',this.value)"></td>
+                <td><input type="number" style="width:40px" value="${n.t4}" onchange="saveN('${s.id}','t4',this.value)"></td>
+                <td><input type="number" style="width:40px" value="${n.t5}" onchange="saveN('${s.id}','t5',this.value)"></td>
+                <td><input type="number" style="width:40px" value="${n.uh1}" onchange="saveN('${s.id}','uh1',this.value)"></td>
+                <td><input type="number" style="width:40px" value="${n.uh2}" onchange="saveN('${s.id}','uh2',this.value)"></td>
+                <td class="text-center"><b>${avg}</b></td></tr>`;
+        });
+        document.getElementById('body-nilai').innerHTML = html;
+    }
+
+    function saveN(id, key, val) {
+        const s = dataSiswa.find(x => x.id === id);
+        if(s) {
+            s.n[key] = parseInt(val) || 0;
+            localStorage.setItem('app_sman1_siswa', JSON.stringify(dataSiswa));
+            renderNilai();
+        }
+    }
+
+    function renderJurnal() {
+        const tgl = document.getElementById('tgl-harian').value;
+        const key = currentKelas + "_" + tgl;
+        const d = dbJurnalGuru[key] || {materi:'', aktivitas:'', catatan:''};
+        document.getElementById('jurnal-materi').value = d.materi;
+        document.getElementById('jurnal-aktivitas').value = d.aktivitas;
+        document.getElementById('jurnal-catatan').value = d.catatan;
+        document.getElementById('pertemuan-ke').value = dbJurnal[key] || "1";
+    }
+
+    function simpanJurnalGuru() {
+        const tgl = document.getElementById('tgl-harian').value;
+        const key = currentKelas + "_" + tgl;
+        dbJurnalGuru[key] = {
+            materi: document.getElementById('jurnal-materi').value,
+            aktivitas: document.getElementById('jurnal-aktivitas').value,
+            catatan: document.getElementById('jurnal-catatan').value
+        };
+        localStorage.setItem('app_sman1_jurnalguru', JSON.stringify(dbJurnalGuru));
+        document.getElementById('status-jurnal').innerText = "Tersimpan...";
+    }
+
+    function simpanJurnal() {
+        const tgl = document.getElementById('tgl-harian').value;
+        const key = currentKelas + "_" + tgl;
+        dbJurnal[key] = document.getElementById('pertemuan-ke').value;
+        localStorage.setItem('app_sman1_jurnal', JSON.stringify(dbJurnal));
+    }
+
+    function renderRekap() {
+        const siswaKelas = dataSiswa.filter(s => s.kelas === currentKelas);
+        let h = `<tr><th>No</th><th>Nama</th><th>H</th><th>S</th><th>I</th><th>A</th></tr>`;
+        document.getElementById('head-rekap').innerHTML = h;
+        let b = "";
+        siswaKelas.forEach((s,i) => {
+            let h=0, sk=0, iz=0, al=0;
+            Object.keys(dbAbsen).forEach(tgl => {
+                const st = dbAbsen[tgl][s.id];
+                if(st=='H') h++; if(st=='S') sk++; if(st=='I') iz++; if(st=='A') al++;
+            });
+            b += `<tr><td class="text-center">${i+1}</td><td>${s.nama}</td><td class="text-center">${h}</td><td class="text-center">${sk}</td><td class="text-center">${iz}</td><td class="text-center" style="color:red; font-weight:bold">${al}</td></tr>`;
+        });
+        document.getElementById('body-rekap').innerHTML = b;
+    }
+    
+    function exportExcel() {
+        if(!currentKelas) return alert("Pilih kelas dulu!");
+        const table = document.getElementById('tabel-rekap');
+        const wb = XLSX.utils.table_to_book(table, {sheet: "Rekap"});
+        XLSX.writeFile(wb, "Rekap_Presensi_" + currentKelas + ".xlsx");
+    }
+
+    // --- CLOUD FUNCTION BARU (Bisa dipanggil dari tombol mana saja) ---
+    function uploadData(btnElement) {
+        // Ambil tombol yang diklik (agar bisa berubah jadi loading)
+        let btn = btnElement;
+        let oldText = "";
+        
+        if (btn) {
+            oldText = btn.innerText;
+            btn.innerText = "⏳...";
+            btn.disabled = true;
+        }
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'simpan',
+                data: { siswa: dataSiswa, absen: dbAbsen, jurnal: dbJurnal, jurnalGuru: dbJurnalGuru }
+            })
+        })
+        .then(res => res.json())
+        .then(r => { 
+            alert("✅ Sukses! Data tersimpan di Cloud."); 
+            if(btn) { btn.innerText = oldText; btn.disabled = false; }
+        })
+        .catch(e => { 
+            alert("❌ Gagal koneksi. Cek internet."); 
+            if(btn) { btn.innerText = oldText; btn.disabled = false; }
+        });
+    }
+
+    function downloadData(btnElement) {
+        let btn = btnElement;
+        let oldText = "";
+        
+        if (btn) {
+            oldText = btn.innerText;
+            btn.innerText = "⏳...";
+            btn.disabled = true;
+        }
+
+        fetch(GOOGLE_SCRIPT_URL + "?action=ambil_db")
+        .then(res => res.json())
+        .then(r => {
+            if(r.siswa || r.absen) {
+                dataSiswa = r.siswa || []; dbAbsen = r.absen || {}; dbJurnal = r.jurnal || {}; dbJurnalGuru = r.jurnalGuru || {};
                 localStorage.setItem('app_sman1_siswa', JSON.stringify(dataSiswa));
                 localStorage.setItem('app_sman1_absen', JSON.stringify(dbAbsen));
                 localStorage.setItem('app_sman1_jurnal', JSON.stringify(dbJurnal));
-                localStorage.setItem('app_sman1_infotugas', JSON.stringify(dbInfoTugas));
                 localStorage.setItem('app_sman1_jurnalguru', JSON.stringify(dbJurnalGuru));
+                
+                alert("✅ Data berhasil diambil!");
                 location.reload();
+            } else {
+                alert("⚠️ Data Cloud masih kosong.");
+                if(btn) { btn.innerText = oldText; btn.disabled = false; }
             }
-        }).catch(e=>{ btn.innerText="⬇️ Ambil Data"; btn.disabled=false; alert("Gagal mengambil data."); });
+        })
+        .catch(e => { 
+            alert("❌ Gagal download."); 
+            if(btn) { btn.innerText = oldText; btn.disabled = false; }
+        });
     }
 
-    function renderPresensi() {
-        const tgl = document.getElementById('tgl-harian').value;
-        const keyJurnal = currentKelas + "_" + tgl;
-        document.getElementById('pertemuan-ke').value = dbJurnal[keyJurnal] || "1";
-        const siswaKelas = dataSiswa.filter(s => s.kelas === currentKelas);
-        const dataHari = dbAbsen[tgl] || {};
-        document.getElementById('body-presensi').innerHTML = siswaKelas.map((s, i) => {
-            const st = dataHari[s.id] || "";
-            let cls = ""; if(st=='H') cls='bg-h'; if(st=='S') cls='bg-s'; if(st=='I') cls='bg-i'; if(st=='A') cls='bg-a';
-            return `<tr><td class="text-center">${i+1}</td><td>${s.nama}</td>
-            <td><select class="status-select ${cls}" onchange="simpanAbsen('${s.id}', this.value)"><option value="">-</option><option value="H" ${st=='H'?'selected':''}>Hadir</option><option value="S" ${st=='S'?'selected':''}>Sakit</option><option value="I" ${st=='I'?'selected':''}>Izin</option><option value="A" ${st=='A'?'selected':''}>Alpha</option></select></td><td><small>${getKet(st)}</small></td></tr>`;
-        }).join('');
+    function resetSemua() {
+        if(confirm("Hapus semua data di perangkat ini? (Data di Cloud aman)")) {
+            localStorage.clear();
+            location.reload();
+        }
     }
-    function simpanAbsen(id, val) { const tgl = document.getElementById('tgl-harian').value; if(!dbAbsen[tgl]) dbAbsen[tgl] = {}; dbAbsen[tgl][id] = val; localStorage.setItem('app_sman1_absen', JSON.stringify(dbAbsen)); renderPresensi(); }
-    function simpanJurnal() { const tgl = document.getElementById('tgl-harian').value; const val = document.getElementById('pertemuan-ke').value; const key = currentKelas + "_" + tgl; dbJurnal[key] = val; localStorage.setItem('app_sman1_jurnal', JSON.stringify(dbJurnal)); }
-    function renderNilai() {
-        const siswaKelas = dataSiswa.filter(s => s.kelas === currentKelas);
-        const info = dbInfoTugas[currentKelas] || {};
-        ['t1','t2','t3','t4','t5'].forEach(k => { document.getElementById('info-'+k).value = info[k] || ""; });
-        document.getElementById('body-nilai').innerHTML = siswaKelas.map((s, i) => {
-            if(!s.n.t1) s.n.t1=0; if(!s.n.t2) s.n.t2=0; if(!s.n.t3) s.n.t3=0; if(!s.n.t4) s.n.t4=0; if(!s.n.t5) s.n.t5=0;
-            const n = s.n; const total = n.t1+n.t2+n.t3+n.t4+n.t5+n.uh1+n.uh2+n.uts+n.uas; const avg = (total / 9).toFixed(1);
-            return `<tr><td class="text-center">${i+1}</td><td>${s.nama}</td><td><input class="input-nilai" type="number" value="${n.t1}" onchange="saveN('${s.id}','t1',this.value)"></td><td><input class="input-nilai" type="number" value="${n.t2}" onchange="saveN('${s.id}','t2',this.value)"></td><td><input class="input-nilai" type="number" value="${n.t3}" onchange="saveN('${s.id}','t3',this.value)"></td><td><input class="input-nilai" type="number" value="${n.t4}" onchange="saveN('${s.id}','t4',this.value)"></td><td><input class="input-nilai" type="number" value="${n.t5}" onchange="saveN('${s.id}','t5',this.value)"></td><td><input class="input-nilai" type="number" value="${n.uh1}" onchange="saveN('${s.id}','uh1',this.value)"></td><td><input class="input-nilai" type="number" value="${n.uh2}" onchange="saveN('${s.id}','uh2',this.value)"></td><td><input class="input-nilai" type="number" value="${n.uts}" onchange="saveN('${s.id}','uts',this.value)"></td><td><input class="input-nilai" type="number" value="${n.uas}" onchange="saveN('${s.id}','uas',this.value)"></td><td class="text-center text-bold">${avg}</td></tr>`;
-        }).join('');
-    }
-    function saveN(id, col, val) { let s = dataSiswa.find(x => x.id === id); if(s) { s.n[col] = parseInt(val) || 0; localStorage.setItem('app_sman1_siswa', JSON.stringify(dataSiswa)); renderNilai(); } }
-    function simpanInfoTugas(col, val) { if(!dbInfoTugas[currentKelas]) dbInfoTugas[currentKelas] = {}; dbInfoTugas[currentKelas][col] = val; localStorage.setItem('app_sman1_infotugas', JSON.stringify(dbInfoTugas)); }
-    function exportExcel() { if(!currentKelas) return alert("Pilih kelas dulu!"); const table = document.getElementById('tabel-rekap'); const wb = XLSX.utils.table_to_book(table, {sheet: "Rekap"}); const mode = document.getElementById('mode-rekap').value; const periode = (mode==='bulanan') ? document.getElementById('filter-bulan').value : document.getElementById('filter-tanggal').value; const filename = "Rekap_" + currentKelas.replace(/ /g, '_') + "_" + periode + ".xlsx"; XLSX.writeFile(wb, filename); }
-    function resetAll() { if(confirm("Yakin hapus semua data?")) { localStorage.clear(); location.reload(); } }
-    function getKet(s) { if(s=='H') return 'Hadir'; if(s=='S') return 'Sakit'; if(s=='I') return 'Izin'; if(s=='A') return 'Alpha'; return ''; }
 </script>
+
 </body>
 </html>
