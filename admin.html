@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Guru - Pak Cokro</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        h1 { color: #1e293b; border-bottom: 2px solid #2563eb; padding-bottom: 10px; }
+        
+        .toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        select, button { padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer; }
+        button.primary { background: #2563eb; color: white; border: none; font-weight: bold; }
+        button.print { background: #475569; color: white; border: none; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+        th, td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
+        th { background: #f8fafc; color: #334155; }
+        tr:nth-child(even) { background: #f8fafc; }
+        
+        .loading { text-align: center; padding: 20px; color: #64748b; font-style: italic; }
+        
+        @media print {
+            .toolbar, .no-print { display: none; }
+            body { background: white; }
+            .container { box-shadow: none; border: none; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>👨‍🏫 Panel Monitoring Guru</h1>
+        <button onclick="window.location.href='index.html'" class="no-print" style="background:red; color:white; border:none; padding:5px 10px; border-radius:4px;">Logout</button>
+    </div>
+
+    <div class="toolbar">
+        <select id="filterKelas">
+            <option value="ALL">Semua Kelas</option>
+            <option value="KELAS 10-1">KELAS 10-1</option>
+            <option value="KELAS 10-2">KELAS 10-2</option>
+            <option value="KELAS 10-3">KELAS 10-3</option>
+            <option value="KELAS 10-4">KELAS 10-4</option>
+            <option value="KELAS 10-5">KELAS 10-5</option>
+            <option value="KELAS 10-6">KELAS 10-6</option>
+            <option value="KELAS 10-7">KELAS 10-7</option>
+        </select>
+        
+        <button class="primary" onclick="loadData()">🔄 Refresh Data</button>
+        <button class="print" onclick="window.print()">🖨️ Cetak Laporan</button>
+    </div>
+
+    <div id="statusMsg" class="loading">Klik "Refresh Data" untuk mengambil nilai siswa...</div>
+
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Waktu Kumpul</th>
+                <th>Kode LKPD</th>
+                <th>Nama Siswa</th>
+                <th>Kelas</th>
+                <th>Detail Jawaban</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+    
+    <div style="margin-top: 50px; text-align: center; font-size: 0.8rem; color: #94a3b8;">
+        Panel Guru © 2025 usudo.id | Data bersumber dari Google Sheets
+    </div>
+</div>
+
+<script>
+    // --- GANTI URL INI DENGAN URL APPS SCRIPT BAPAK ---
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNUP6iQG95cQNBWnLw46NJOVE5P_lVjFPSRRBPSllkguXFdkOuAdVr4gYyAEro0xGE/exec';
+
+    function loadData() {
+        const tbody = document.querySelector('#dataTable tbody');
+        const status = document.getElementById('statusMsg');
+        const filter = document.getElementById('filterKelas').value;
+
+        status.innerHTML = "Sedang menghubungkan ke Server Google... ⏳";
+        status.style.display = 'block';
+        tbody.innerHTML = '';
+
+        fetch(SCRIPT_URL)
+        .then(res => res.json())
+        .then(response => {
+            if(response.status === 'success') {
+                status.style.display = 'none';
+                let data = response.data;
+                
+                // Filter Data Lokal (di browser)
+                if(filter !== 'ALL') {
+                    // Pastikan nama kolom di Excel Bapak sesuai (disini asumsi kolom ke-3 adalah Kelas)
+                    // Atau sesuaikan dengan Key Object JSON
+                    data = data.filter(row => row.Kelas === filter || row[3] === filter);
+                }
+
+                if(data.length === 0) {
+                    status.innerHTML = "Belum ada data untuk kelas ini.";
+                    status.style.display = 'block';
+                    return;
+                }
+
+                // Render Tabel
+                data.forEach(row => {
+                    let tr = document.createElement('tr');
+                    
+                    // Format Tanggal
+                    let rawDate = row.Timestamp || row[0];
+                    let dateStr = new Date(rawDate).toLocaleString('id-ID');
+
+                    // Ambil Data (Support format JSON object atau Array)
+                    let nama = row.Nama || row[2];
+                    let kls = row.Kelas || row[3];
+                    let kode = row.Kode || row[1];
+                    let jawaban = row.Jawaban || row[5];
+                    
+                    // Jika jawaban panjang (JSON string), kita rapikan sedikit
+                    let displayJawaban = "";
+                    try {
+                        let jObj = JSON.parse(jawaban);
+                        // Ambil contoh jawaban soal 1 saja biar tabel gak penuh
+                        displayJawaban = Object.values(jObj).join(", ").substring(0, 50) + "..."; 
+                    } catch(e) {
+                        displayJawaban = jawaban;
+                    }
+
+                    tr.innerHTML = `
+                        <td>${dateStr}</td>
+                        <td><span style="background:#dbeafe; padding:2px 5px; border-radius:4px; font-size:0.8em;">${kode}</span></td>
+                        <td><strong>${nama}</strong></td>
+                        <td>${kls}</td>
+                        <td>${displayJawaban}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } else {
+                status.innerHTML = "Error mengambil data: " + response.error;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            status.innerHTML = "Gagal koneksi. Cek internet!";
+        });
+    }
+
+    // Auto load saat pertama buka
+    loadData();
+</script>
+
+</body>
+</html>
