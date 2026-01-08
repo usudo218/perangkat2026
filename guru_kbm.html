@@ -97,6 +97,7 @@
     </style>
 </head>
 <body>
+    <a href="guru_dashboard.html" class="btn-back-dashboard">⬅️ Kembali ke Menu Guru</a>
 <script>
     if(sessionStorage.getItem('sudah_login')!=='ya'){alert("Anda harus login!");window.location.href='index.html';}
     function logout(){if(confirm("Keluar?")){sessionStorage.removeItem('sudah_login');window.location.href='index.html';}}
@@ -237,6 +238,27 @@
 
     const MASTER_SISWA = (typeof SISWA_BARU !== 'undefined') ? SISWA_BARU : [];
     let dataSiswa = JSON.parse(localStorage.getItem('app_sman1_siswa')) || [];
+    // --- AUTO SINKRON DARI SISWA.JS ---
+if (typeof SISWA_BARU !== 'undefined') {
+    // Jika data lokal masih kosong atau ingin update, kita injek dari SISWA_BARU
+    let countNew = 0;
+    SISWA_BARU.forEach(m => {
+        const exist = dataSiswa.find(d => d.nama === m.nama && d.kelas === m.kelas);
+        if(!exist) {
+            dataSiswa.push({
+                id: 'S'+Date.now()+Math.floor(Math.random()*999), 
+                nama: m.nama, 
+                kelas: m.kelas, 
+                n: {t1:0,t2:0,t3:0,t4:0,t5:0,uh1:0,uh2:0,uts:0,uas:0}
+            });
+            countNew++;
+        }
+    });
+    if(countNew > 0) {
+        localStorage.setItem('app_sman1_siswa', JSON.stringify(dataSiswa));
+        console.log("Auto-Sync: " + countNew + " siswa baru ditambahkan.");
+    }
+}
     let dbAbsen = JSON.parse(localStorage.getItem('app_sman1_absen')) || {}; 
     let dbJurnal = JSON.parse(localStorage.getItem('app_sman1_jurnal')) || {}; 
     let dbInfoTugas = JSON.parse(localStorage.getItem('app_sman1_infotugas')) || {};
@@ -503,6 +525,7 @@
 </script>
 </body>
 </html>
+
 
 
 
