@@ -169,11 +169,18 @@
         }
 
         // Di dalam file index.html bagian bawah
+// Di dalam <script> file index.html
+
 window.aksesGuru = function() {
     let pass = prompt("Masukkan Sandi Guru:");
-    if(pass === "MERDEKA") { // Atau password Bapak
-        // UBAH BARIS INI:
-        window.location.href = "guru_dashboard.html"; 
+    
+    if(pass === "MERDEKA") { // Password Bapak
+        // 1. SIMPAN IDENTITAS GURU (PENTING!)
+        localStorage.setItem('user_role', 'agustjakra'); 
+        localStorage.setItem('guru_nama', '1212'); // Bisa ganti nama Bapak
+
+        // 2. Masuk ke Dashboard
+        window.location.href = "guru_dashboard.html";
     } else {
         if(pass) alert("Sandi salah!");
     }
@@ -181,4 +188,5 @@ window.aksesGuru = function() {
     </script>
 </body>
 </html>
+
 
