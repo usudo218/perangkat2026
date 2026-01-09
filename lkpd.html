@@ -3,59 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LKPD Digital</title>
+    <title>LKPD Digital - Sesuai Absen</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding-bottom: 100px; }
-        .top-nav { background: white; padding: 15px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding-bottom: 120px; }
+        .top-nav { background: white; padding: 15px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
         .btn-back { background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 8px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; font-weight: bold; }
-        
         .container { max-width: 800px; margin: 30px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 90%; }
-        .soal-box { background: #f8fafc; padding: 20px; margin-bottom: 25px; border-left: 5px solid #3b82f6; border-radius: 4px; }
-        input, textarea { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; }
-        input:focus, textarea:focus { outline: 2px solid #3b82f6; }
-
-        .floating-menu { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); text-align: center; border-top: 1px solid #e2e8f0; }
+        .soal-box { background: #f8fafc; padding: 25px; margin-bottom: 25px; border-left: 5px solid #2563eb; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .soal-text { font-size: 1.05rem; font-weight: 500; color: #1e293b; margin-bottom: 10px; display: block; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 1rem; margin-top: 5px; }
+        input:focus, textarea:focus { outline: 2px solid #2563eb; }
+        .floating-menu { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); text-align: center; z-index: 999; }
         .btn-save { background: #16a34a; color: white; border: none; padding: 12px 40px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3); }
-        .btn-save:hover { background: #15803d; }
-        .btn-save:disabled { background: #cbd5e1; cursor: not-allowed; }
+        .badge-paket { background: #dcfce7; color: #166534; padding: 5px 10px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; display: inline-block; margin-top: 5px; }
     </style>
 </head>
 <body>
 
     <div class="top-nav">
         <a href="dashboard.html" class="btn-back">⬅️ Batal</a>
-        <div style="font-weight: bold;">LKPD: AGEN DATA</div>
+        <div style="font-weight: bold;">LKPD DIGITAL</div>
     </div>
 
     <div class="container">
-        <div style="margin-bottom:30px; border-bottom:1px dashed #ccc; padding-bottom:10px;">
-            <h1 style="margin:0">Misi 1: Analisis Data</h1>
-            <p>Siswa: <strong id="namaSiswa">-</strong> (<span id="kelasSiswa">-</span>)</p>
-        </div>
+        <header style="border-bottom: 2px dashed #cbd5e1; padding-bottom: 20px; margin-bottom: 30px;">
+            <h1 style="margin:0; color:#1e293b;" id="judulBab">Memuat Soal...</h1>
+            <p id="deskripsiBab" style="color:#64748b; margin-top:5px;">...</p>
+            <div style="margin-top:15px; font-size:0.9rem;">
+                Siswa: <strong id="namaSiswa">-</strong> | Kelas: <span id="kelasSiswa">-</span>
+                <br><span id="infoPaket"></span>
+            </div>
+        </header>
 
         <form id="formLKPD">
-            <div class="soal-box">
-                <label><strong>1. Nama Kelompok</strong></label>
-                <input type="text" name="nama_tim" placeholder="Contoh: Garuda Cyber" required>
+            <div class="soal-box" style="border-color: #f59e0b;">
+                <label class="soal-text">1. Identitas Tim (Nama Kelompok)</label>
+                <input type="text" name="nama_tim" placeholder="Contoh: Tim Garuda..." required>
             </div>
-            <div class="soal-box">
-                <label><strong>2. Temuan Data Pribadi</strong></label>
-                <p><small>Sebutkan satu data yang menurutmu bersifat RAHASIA:</small></p>
-                <input type="text" name="soal_1" required>
-            </div>
-            <div class="soal-box">
-                <label><strong>3. Analisa Masalah</strong></label>
-                <p><small>Mengapa kita harus melindungi data pribadi teman?</small></p>
-                <textarea name="soal_2" rows="4" required></textarea>
-            </div>
+            <div id="dynamicQuestions"></div>
         </form>
     </div>
 
     <div class="floating-menu">
-        <button class="btn-save" onclick="simpanData()">💾 KIRIM JAWABAN</button>
+        <button class="btn-save" onclick="kirimJawaban()">💾 KIRIM JAWABAN</button>
     </div>
 
+    <script src="siswa.js"></script>
+    <script src="bank_soal.js"></script>
+
     <script>
+        // GANTI URL BAPAK DI SINI
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAh308PQxtnUoc2cp2goW7FJh2faFeO-9pebfD9Pt--_LfaoxiS8L5pLqDUhcC5Ky0/exec';
+
+        // 1. Cek Login
         const nama = localStorage.getItem('siswa_nama');
         const kelas = localStorage.getItem('siswa_kelas');
         if(!nama) window.location.href = 'index.html';
@@ -63,40 +63,79 @@
         document.getElementById('namaSiswa').innerText = nama;
         document.getElementById('kelasSiswa').innerText = kelas;
 
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwWsOmNzN6jGVKFxUyGMZlTbaUUGH1tytarooImNSxjKCNvDqwWCUDZgcM4SUqSm3ixQg/exec";
+        // 2. Validasi File
+        if(typeof SISWA_BARU === 'undefined' || typeof DATA_LKPD === 'undefined') {
+            alert("⚠️ Error: File siswa.js atau bank_soal.js tidak ditemukan!");
+        } else {
+            renderSoalAbsen();
+        }
 
-        function simpanData() {
+        function renderSoalAbsen() {
+            // A. Cari Nomor Urut Absen (Logika Pintar)
+            // 1. Ambil semua anak di kelas yang sama
+            const temanSekelas = SISWA_BARU.filter(s => s.kelas === kelas);
+            
+            // 2. Urutkan nama A-Z (Sesuai Absen Sekolah)
+            temanSekelas.sort((a, b) => a.nama.localeCompare(b.nama));
+            
+            // 3. Cari posisi saya di urutan ke berapa (Index mulai 0, jadi tambah 1)
+            let noAbsen = temanSekelas.findIndex(s => s.nama === nama) + 1;
+            
+            // Jika nama tidak ada di daftar (misal login pakai nama asal), default ke 1
+            if (noAbsen === 0) noAbsen = 1;
+
+            // B. Ambil Soal Sesuai Nomor Absen
+            // Karena Array mulai dari 0, maka index = noAbsen - 1
+            // Jika absen > 34, kita pakai modulo agar kembali ke 1 (Safety)
+            const indexSoal = (noAbsen - 1) % DATA_LKPD.soal.length;
+            const paketSoal = DATA_LKPD.soal[indexSoal];
+
+            // C. Tampilkan ke Layar
+            document.getElementById('judulBab').innerText = DATA_LKPD.judul;
+            document.getElementById('deskripsiBab').innerText = DATA_LKPD.deskripsi;
+            document.getElementById('infoPaket').innerHTML = `<span class="badge-paket">🔖 NO. ABSEN: ${noAbsen}</span>`;
+
+            const container = document.getElementById('dynamicQuestions');
+            container.innerHTML = `
+                <div class="soal-box">
+                    <label class="soal-text">2. Soal Bagian A (Sesuai Absen ${noAbsen})</label>
+                    <div style="background:#e2e8f0; padding:15px; border-radius:6px; font-style:italic; margin-bottom:10px;">"${paketSoal.soal_1}"</div>
+                    <input type="hidden" name="soal_2_tanya" value="${paketSoal.soal_1}">
+                    <textarea name="soal_2_jawab" rows="2" placeholder="Jawab di sini..." required></textarea>
+                </div>
+                <div class="soal-box">
+                    <label class="soal-text">3. Soal Bagian B (Sesuai Absen ${noAbsen})</label>
+                    <div style="background:#e2e8f0; padding:15px; border-radius:6px; font-style:italic; margin-bottom:10px;">"${paketSoal.soal_2}"</div>
+                    <input type="hidden" name="soal_3_tanya" value="${paketSoal.soal_2}">
+                    <textarea name="soal_3_jawab" rows="5" placeholder="Analisis di sini..." required></textarea>
+                </div>
+            `;
+        }
+
+        function kirimJawaban() {
             const btn = document.querySelector('.btn-save');
             const form = document.getElementById('formLKPD');
-            
-            // Validasi manual sederhana
-            if(!form.checkValidity()) {
-                alert("Mohon isi semua jawaban sebelum mengirim!");
-                return;
-            }
+            if(!form.checkValidity()) return alert("⚠️ Mohon lengkapi semua jawaban!");
 
             btn.innerText = "⏳ Mengirim..."; btn.disabled = true;
-            const dataJawaban = Object.fromEntries(new FormData(form).entries());
-
-            const payload = {
-                kode_lkpd: localStorage.getItem('active_lkpd') || 'LKPD-01',
-                nama: nama, kelas: kelas, nilai: "-", jawaban: dataJawaban
-            };
+            
+            const formData = new FormData(form);
+            const dataJawaban = {};
+            formData.forEach((v, k) => dataJawaban[k] = v);
 
             fetch(SCRIPT_URL, {
                 method: 'POST', mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({
+                    kode_lkpd: DATA_LKPD.judul,
+                    nama: nama, kelas: kelas, nilai: "-", jawaban: dataJawaban
+                })
             }).then(() => {
-                alert("✅ JAWABAN BERHASIL TERKIRIM!");
-                window.location.href = 'dashboard.html';
+                alert("✅ JAWABAN TERKIRIM!"); window.location.href = 'dashboard.html';
             }).catch(() => {
-                alert("⚠️ Gagal koneksi internet."); btn.innerText = "💾 KIRIM JAWABAN"; btn.disabled = false;
+                alert("❌ Gagal Kirim. Cek Internet."); btn.disabled = false; btn.innerText = "💾 KIRIM JAWABAN";
             });
         }
     </script>
 </body>
 </html>
-
-
-
