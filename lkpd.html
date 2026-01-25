@@ -3,141 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LKPD Digital - Sesuai Absen</title>
+    <title>Lembar Kerja Peserta Didik (LKPD)</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding-bottom: 120px; }
-        .top-nav { background: white; padding: 15px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-        .btn-back { background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 8px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; font-weight: bold; }
-        .container { max-width: 800px; margin: 30px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 90%; }
-        .soal-box { background: #f8fafc; padding: 25px; margin-bottom: 25px; border-left: 5px solid #2563eb; border-radius: 8px; border: 1px solid #e2e8f0; }
-        .soal-text { font-size: 1.05rem; font-weight: 500; color: #1e293b; margin-bottom: 10px; display: block; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-family: inherit; font-size: 1rem; margin-top: 5px; }
-        input:focus, textarea:focus { outline: 2px solid #2563eb; }
-        .floating-menu { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); text-align: center; z-index: 999; }
-        .btn-save { background: #16a34a; color: white; border: none; padding: 12px 40px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3); }
-        .badge-paket { background: #dcfce7; color: #166534; padding: 5px 10px; border-radius: 50px; font-size: 0.8rem; font-weight: bold; display: inline-block; margin-top: 5px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; padding: 20px; color: #334155; }
+        
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
+        .header { border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .header h1 { margin: 0; color: #1e293b; font-size: 1.8rem; }
+        .header p { margin: 5px 0 0; color: #64748b; }
+        
+        .student-badge { background: #eff6ff; color: #2563eb; padding: 10px 15px; border-radius: 8px; font-weight: bold; border: 1px solid #bfdbfe; text-align: right; }
+        
+        .soal-box { background: #fffcf0; border-left: 5px solid #f59e0b; padding: 20px; margin-bottom: 30px; border-radius: 4px; }
+        .soal-box h3 { margin-top: 0; color: #b45309; }
+        
+        .data-container { background: #1e293b; color: #f8fafc; padding: 25px; border-radius: 8px; font-family: 'Courier New', monospace; margin: 20px 0; overflow-x: auto; line-height: 1.6; border: 1px solid #475569; position: relative; }
+        
+        .btn-back { display: inline-block; padding: 10px 20px; background: #94a3b8; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; margin-top: 20px; }
+        .btn-back:hover { background: #64748b; }
+
+        .btn-print { float: right; background: #2563eb; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-print:hover { background: #1d4ed8; }
+
+        .instruction-list ol { padding-left: 20px; }
+        .instruction-list li { margin-bottom: 8px; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; padding: 0; }
+            .btn-back, .btn-print { display: none; }
+            .data-container { background: white; color: black; border: 2px solid black; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="top-nav">
-        <a href="dashboard.html" class="btn-back">⬅️ Batal</a>
-        <div style="font-weight: bold;">LKPD DIGITAL</div>
-    </div>
-
     <div class="container">
-        <header style="border-bottom: 2px dashed #cbd5e1; padding-bottom: 20px; margin-bottom: 30px;">
-            <h1 style="margin:0; color:#1e293b;" id="judulBab">Memuat Soal...</h1>
-            <p id="deskripsiBab" style="color:#64748b; margin-top:5px;">...</p>
-            <div style="margin-top:15px; font-size:0.9rem;">
-                Siswa: <strong id="namaSiswa">-</strong> | Kelas: <span id="kelasSiswa">-</span>
-                <br><span id="infoPaket"></span>
+        <div class="header">
+            <div>
+                <h1>ULANGAN HARIAN: VISUALISASI DATA</h1>
+                <p>Mata Pelajaran: Informatika | Kelas 10</p>
             </div>
-        </header>
-
-        <form id="formLKPD">
-            <div class="soal-box" style="border-color: #f59e0b;">
-                <label class="soal-text">1. Nama Lengkap</label>
-                <input type="text" name="nama_tim" placeholder="Contoh: Tim Garuda..." required>
+            <div class="student-badge">
+                <div id="namaSiswa">Loading...</div>
+                <div id="kelasSiswa" style="font-size: 0.85rem; font-weight: normal; margin-top: 4px;">-</div>
+                <div id="kodeSoal" style="font-size: 0.75rem; color: #64748b; margin-top: 4px;">Kode Soal: -</div>
             </div>
-            <div id="dynamicQuestions"></div>
-        </form>
-    </div>
+        </div>
 
-    <div class="floating-menu">
-        <button class="btn-save" onclick="kirimJawaban()">💾 KIRIM JAWABAN</button>
+        <button class="btn-print" onclick="window.print()">🖨️ Cetak Soal</button>
+
+        <div class="instruction-list">
+            <h3>Instruksi Pengerjaan:</h3>
+            <p>Berdasarkan <strong>DATA KHUSUS</strong> yang diberikan di bawah, kerjakan langkah berikut pada lembar jawaban Anda:</p>
+            <ol>
+                <li>Hitung <strong>Banyak Data (n)</strong>.</li>
+                <li>Tentukan <strong>Nilai Maksimal</strong> dan <strong>Nilai Minimal</strong>.</li>
+                <li>Hitung <strong>Range (Jangkauan)</strong> data tersebut.</li>
+                <li>Hitung <strong>Banyak Kelas (K)</strong> menggunakan rumus Sturgess: <code>K = 1 + 3,3 log(n)</code>.</li>
+                <li>Hitung <strong>Panjang/Lebar Kelas (C)</strong>.</li>
+                <li>Buatlah <strong>Tabel Distribusi Frekuensi</strong>.</li>
+                <li>Visualisasikan data tersebut menjadi <strong>Grafik Batang (Histogram)</strong>.</li>
+            </ol>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+        <div class="soal-box">
+            <h3>DATA SOAL ANDA</h3>
+            <p>Berikut adalah data mentah yang harus Anda olah. Pastikan Anda tidak menukar data ini dengan teman Anda.</p>
+            
+            <div id="tempatData" class="data-container">
+                Memuat data soal...
+            </div>
+        </div>
+
+        <a href="dashboard.html" class="btn-back">← Kembali ke Dashboard</a>
     </div>
 
     <script src="siswa.js"></script>
-    <script src="bank_soal.js"></script>
 
     <script>
-        // GANTI URL BAPAK DI SINI
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwWsOmNzN6jGVKFxUyGMZlTbaUUGH1tytarooImNSxjKCNvDqwWCUDZgcM4SUqSm3ixQg/exec';
-
-        // 1. Cek Login
-        const nama = localStorage.getItem('siswa_nama');
-        const kelas = localStorage.getItem('siswa_kelas');
-        if(!nama) window.location.href = 'index.html';
-
-        document.getElementById('namaSiswa').innerText = nama;
-        document.getElementById('kelasSiswa').innerText = kelas;
-
-        // 2. Validasi File
-        if(typeof SISWA_BARU === 'undefined' || typeof DATA_LKPD === 'undefined') {
-            alert("⚠️ Error: File siswa.js atau bank_soal.js tidak ditemukan!");
-        } else {
-            renderSoalAbsen();
-        }
-
-        function renderSoalAbsen() {
-            // A. Cari Nomor Urut Absen (Logika Pintar)
-            // 1. Ambil semua anak di kelas yang sama
-            const temanSekelas = SISWA_BARU.filter(s => s.kelas === kelas);
-            
-            // 2. Urutkan nama A-Z (Sesuai Absen Sekolah)
-            temanSekelas.sort((a, b) => a.nama.localeCompare(b.nama));
-            
-            // 3. Cari posisi saya di urutan ke berapa (Index mulai 0, jadi tambah 1)
-            let noAbsen = temanSekelas.findIndex(s => s.nama === nama) + 1;
-            
-            // Jika nama tidak ada di daftar (misal login pakai nama asal), default ke 1
-            if (noAbsen === 0) noAbsen = 1;
-
-            // B. Ambil Soal Sesuai Nomor Absen
-            // Karena Array mulai dari 0, maka index = noAbsen - 1
-            // Jika absen > 34, kita pakai modulo agar kembali ke 1 (Safety)
-            const indexSoal = (noAbsen - 1) % DATA_LKPD.soal.length;
-            const paketSoal = DATA_LKPD.soal[indexSoal];
-
-            // C. Tampilkan ke Layar
-            document.getElementById('judulBab').innerText = DATA_LKPD.judul;
-            document.getElementById('deskripsiBab').innerText = DATA_LKPD.deskripsi;
-            document.getElementById('infoPaket').innerHTML = `<span class="badge-paket">🔖 NO. ABSEN: ${noAbsen}</span>`;
-
-            const container = document.getElementById('dynamicQuestions');
-            container.innerHTML = `
-                <div class="soal-box">
-                    <label class="soal-text">2. Soal Bagian A (Sesuai Absen ${noAbsen})</label>
-                    <div style="background:#e2e8f0; padding:15px; border-radius:6px; font-style:italic; margin-bottom:10px;">"${paketSoal.soal_1}"</div>
-                    <input type="hidden" name="soal_2_tanya" value="${paketSoal.soal_1}">
-                    <textarea name="soal_2_jawab" rows="2" placeholder="Jawab di sini..." required></textarea>
-                </div>
-                <div class="soal-box">
-                    <label class="soal-text">3. Soal Bagian B (Sesuai Absen ${noAbsen})</label>
-                    <div style="background:#e2e8f0; padding:15px; border-radius:6px; font-style:italic; margin-bottom:10px;">"${paketSoal.soal_2}"</div>
-                    <input type="hidden" name="soal_3_tanya" value="${paketSoal.soal_2}">
-                    <textarea name="soal_3_jawab" rows="5" placeholder="Analisis di sini..." required></textarea>
-                </div>
-            `;
-        }
-
-        function kirimJawaban() {
-            const btn = document.querySelector('.btn-save');
-            const form = document.getElementById('formLKPD');
-            if(!form.checkValidity()) return alert("⚠️ Mohon lengkapi semua jawaban!");
-
-            btn.innerText = "⏳ Mengirim..."; btn.disabled = true;
-            
-            const formData = new FormData(form);
-            const dataJawaban = {};
-            formData.forEach((v, k) => dataJawaban[k] = v);
-
-            fetch(SCRIPT_URL, {
-                method: 'POST', mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    kode_lkpd: DATA_LKPD.judul,
-                    nama: nama, kelas: kelas, nilai: "-", jawaban: dataJawaban
-                })
-            }).then(() => {
-                alert("✅ JAWABAN TERKIRIM!"); window.location.href = 'dashboard.html';
-            }).catch(() => {
-                alert("❌ Gagal Kirim. Cek Internet."); btn.disabled = false; btn.innerText = "💾 KIRIM JAWABAN";
-            });
-        }
-    </script>
-</body>
-</html>
-
-
+        // 1. DATABASE SOAL (34 VARIASI)
+        const DATABASE_SOAL = [
+            // TIPE A: Deret Angka (0-11)
+            "60, 75, 82, 65, 70, 90, 85, 68, 72, 78, 80, 64, 76, 88, 92, 66, 74, 84, 79, 62, 95, 86, 71, 77, 83, 69, 73, 81, 67, 89, 75, 85, 70, 65, 80",
+            "150, 162, 155, 158, 165, 170, 153, 160, 157, 164, 168, 152, 156, 161, 166, 172, 154, 159, 163, 167, 151, 158, 162, 169, 155, 160, 165, 156, 161, 157, 163, 168",
+            "45, 50, 55, 48, 52, 60, 65, 47, 53, 58, 62, 46, 51, 56, 61, 49, 54, 59, 63, 68, 44, 50, 55, 64, 57, 52, 48, 56, 60, 55, 51, 59",
+            "30, 42, 35, 38, 45, 50, 32, 40, 37, 44, 48, 31, 36, 41, 46, 52, 34, 39, 43, 47, 29, 38, 42, 49, 35, 40, 45, 36, 41, 37, 43, 48",
+            "12, 14, 13, 15, 12, 16, 14, 13, 15, 17, 12, 14, 13, 15, 16, 13, 14, 12, 15, 17, 13, 14, 16, 15, 12, 14, 13, 16, 15, 14, 13, 12",
+            "28, 30, 29, 31, 32, 27, 29, 30, 33, 31, 28, 30, 29, 32, 31, 27, 29, 30, 33, 28, 31, 29, 30, 32, 27, 29, 31, 30, 33, 28, 30, 32",
+            "5, 8, 6, 7, 9, 10, 5, 8, 7, 9, 6, 7, 8, 10, 9, 5, 7, 8, 6, 9, 1
