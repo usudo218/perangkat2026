@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Siswa - Pak Cokro</title>
+    <title>Dashboard Siswa - Informatika</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; margin: 0; padding: 20px; color: #1e293b; }
         
-        /* Header Tetap di Atas */
         .header { 
             background: white; padding: 20px 30px; border-radius: 12px; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
@@ -17,16 +16,15 @@
         .user-info h1 { margin: 0; font-size: 1.4rem; }
         .btn-logout { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
-        /* Judul Section */
         .section-title { 
             display: flex; align-items: center; gap: 10px; margin: 25px 0 15px 0;
-            padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; color: #334155;
+            padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; color: #1e293b;
         }
+        .section-title h2 { margin: 0; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Grid Layout */
         .grid-menu { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
             gap: 15px; 
             margin-bottom: 40px;
         }
@@ -35,13 +33,14 @@
             background: white; padding: 20px; border-radius: 12px; 
             text-align: center; cursor: pointer; transition: 0.3s; 
             border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .card:hover { transform: translateY(-3px); border-color: #2563eb; box-shadow: 0 8px 12px rgba(0,0,0,0.1); }
         .icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
-        .card h3 { font-size: 1rem; margin: 10px 0 5px 0; }
+        .card h3 { font-size: 1rem; margin: 10px 0 5px 0; color: #334155; }
         .card small { color: #64748b; font-weight: 500; }
 
-        /* Warna Khusus Bagian */
+        /* Warna Pembeda */
         .modul-card { border-top: 4px solid #3b82f6; }
         .tugas-card { border-top: 4px solid #f59e0b; background: #fffcf0; }
         .locked-card { opacity: 0.6; cursor: not-allowed; background: #f1f5f9; border-top-color: #94a3b8; }
@@ -71,19 +70,28 @@
             <h3>Analisa Data</h3>
             <small>Buka Materi</small>
         </div>
-        <div class="card modul-card" onclick="alert('Modul belum tersedia')">
+        
+        <div class="card modul-card" onclick="alert('Modul Algoritma sedang disiapkan')">
+            <span class="icon">💻</span>
+            <h3>Algoritma & Pemrograman</h3>
+            <small>Buka Materi</small>
+        </div>
+
+        <div class="card modul-card" onclick="alert('Modul Dampak Sosial sedang disiapkan')">
+            <span class="icon">🌏</span>
+            <h3>Dampak Sosial Informatika</h3>
+            <small>Buka Materi</small>
+        </div>
+
+        <div class="card modul-card" onclick="alert('Modul Praktik Lintas Bidang sedang disiapkan')">
+            <span class="icon">🛠️</span>
+            <h3>Praktik Lintas Bidang</h3>
+            <small>Buka Materi</small>
+        </div>
+
+        <div class="card modul-card" onclick="alert('Materi tambahan belum tersedia')">
             <span class="icon">✅</span>
-            <h3>Validasi Data</h3>
-            <small>Buka Materi</small>
-        </div>
-        <div class="card modul-card" onclick="alert('Modul belum tersedia')">
-            <span class="icon">⚖️</span>
-            <h3>Fakta & Opini</h3>
-            <small>Buka Materi</small>
-        </div>
-        <div class="card modul-card" onclick="alert('Modul belum tersedia')">
-            <span class="icon">📈</span>
-            <h3>Visualisasi</h3>
+            <h3>Validasi Sumber Data</h3>
             <small>Buka Materi</small>
         </div>
     </div>
@@ -95,18 +103,17 @@
         <div class="card tugas-card" onclick="bukaLKPD('LKPD-01')">
             <span class="icon">🕵️</span>
             <h3>Misi Bab 2</h3>
-            <small>Privasi & Keamanan</small>
+            <small>Analisis Data</small>
         </div>
 
-        <div class="card locked-card" onclick="alert('Belum tersedia')">
+        <div class="card locked-card" onclick="alert('Tugas belum dirilis')">
             <span class="icon">⚔️</span>
-            <h3>Excel Ninja</h3>
-            <small>Terkunci</small>
+            <h3>LKPD 2: Proyek Coding</h3>
+            <small>Coming Soon</small>
         </div>
     </div>
 
     <script>
-        // Logika untuk menampilkan nama dari localStorage
         const nama = localStorage.getItem('siswa_nama');
         const kelas = localStorage.getItem('siswa_kelas');
         
