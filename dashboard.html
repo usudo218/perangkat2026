@@ -3,23 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Siswa</title>
+    <title>Dashboard Siswa - Pak Cokro</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; margin: 0; padding: 20px; display: flex; flex-direction: column; min-height: 100vh; }
-        .header { background: white; padding: 20px 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #2563eb; }
-        .user-info h1 { margin: 0; font-size: 1.4rem; color: #1e293b; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; margin: 0; padding: 20px; color: #1e293b; }
+        
+        /* Header Tetap di Atas */
+        .header { 
+            background: white; padding: 20px 30px; border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-left: 5px solid #2563eb; margin-bottom: 30px;
+        }
+        .user-info h1 { margin: 0; font-size: 1.4rem; }
         .btn-logout { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        
-        .grid-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
-        .card { background: white; padding: 25px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card:hover { transform: translateY(-5px); border-color: #2563eb; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        .icon { font-size: 3rem; display: block; margin-bottom: 10px; }
-        .card h3 { font-size: 1.1rem; margin: 10px 0; color: #334155; }
-        
-        .active-card { border-color: #f59e0b; background: #fffbeb; }
-        .locked-card { opacity: 0.6; cursor: not-allowed; background: #f1f5f9; }
 
-        @media (max-width: 600px) { .header { flex-direction: column; text-align: center; gap: 10px; } .grid-menu { grid-template-columns: 1fr 1fr; } }
+        /* Judul Section */
+        .section-title { 
+            display: flex; align-items: center; gap: 10px; margin: 25px 0 15px 0;
+            padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; color: #334155;
+        }
+
+        /* Grid Layout */
+        .grid-menu { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 15px; 
+            margin-bottom: 40px;
+        }
+
+        .card { 
+            background: white; padding: 20px; border-radius: 12px; 
+            text-align: center; cursor: pointer; transition: 0.3s; 
+            border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        }
+        .card:hover { transform: translateY(-3px); border-color: #2563eb; box-shadow: 0 8px 12px rgba(0,0,0,0.1); }
+        .icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+        .card h3 { font-size: 1rem; margin: 10px 0 5px 0; }
+        .card small { color: #64748b; font-weight: 500; }
+
+        /* Warna Khusus Bagian */
+        .modul-card { border-top: 4px solid #3b82f6; }
+        .tugas-card { border-top: 4px solid #f59e0b; background: #fffcf0; }
+        .locked-card { opacity: 0.6; cursor: not-allowed; background: #f1f5f9; border-top-color: #94a3b8; }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; text-align: center; gap: 10px; }
+            .grid-menu { grid-template-columns: 1fr 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -32,69 +62,59 @@
         <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
 
+    <div class="section-title">
+        <span>📚</span> <h2>Modul & Bahan Bacaan</h2>
+    </div>
     <div class="grid-menu">
-        <div class="card" onclick="window.open('https://drive.google.com/file/d/1Meg716ZQ5M1p_ufPm8_ErsoZx2gmtLlc/view?usp=drive_link', '_blank')">
+        <div class="card modul-card" onclick="window.open('https://drive.google.com/file/d/1Meg716ZQ5M1p_ufPm8_ErsoZx2gmtLlc/view?usp=drive_link', '_blank')">
             <span class="icon">📊</span>
             <h3>Analisa Data</h3>
-            <small>Baca Buku</small>
+            <small>Buka Materi</small>
         </div>
-
-        <div class="card" onclick="alert('Modul PDF belum diupload')">
+        <div class="card modul-card" onclick="alert('Modul belum tersedia')">
             <span class="icon">✅</span>
-            <h3>Validasi Sumber Data</h3>
-            <small>Baca Buku</small>
+            <h3>Validasi Data</h3>
+            <small>Buka Materi</small>
         </div>
-
-        <div class="card" onclick="alert('Modul PDF belum diupload')">
+        <div class="card modul-card" onclick="alert('Modul belum tersedia')">
             <span class="icon">⚖️</span>
-            <h3>Fakta dan Opini</h3>
-            <small>Baca Buku</small>
+            <h3>Fakta & Opini</h3>
+            <small>Buka Materi</small>
         </div>
-
-        <div class="card" onclick="alert('Modul PDF belum diupload')">
+        <div class="card modul-card" onclick="alert('Modul belum tersedia')">
             <span class="icon">📈</span>
-            <h3>Visualisasi Data</h3>
-            <small>Baca Buku</small>
+            <h3>Visualisasi</h3>
+            <small>Buka Materi</small>
         </div>
+    </div>
 
-        <div class="card" onclick="alert('Modul PDF belum diupload')">
-            <span class="icon">💻</span>
-            <h3>Algoritma dan Pemrograman</h3>
-            <small>Baca Buku</small>
+    <div class="section-title">
+        <span>📝</span> <h2>LKPD & Tugas Interaktif</h2>
+    </div>
+    <div class="grid-menu">
+        <div class="card tugas-card" onclick="bukaLKPD('LKPD-01')">
+            <span class="icon">🕵️</span>
+            <h3>Misi Bab 2</h3>
+            <small>Privasi & Keamanan</small>
         </div>
-
-        <div class="card" onclick="alert('Modul PDF belum diupload')">
-            <span class="icon">🌏</span>
-            <h3>Dampak Sosial Informatika</h3>
-            <small>Baca Buku</small>
-        </div>
-
-        <div class="card" onclick="alert('Modul PDF belum diupload')">
-            <span class="icon">🛠️</span>
-            <h3>Praktik Lintas Bidang</h3>
-            <small>Baca Buku</small>
-        </div>
-
-        <div class="card active-card" onclick="bukaLKPD('LKPD-01')">
-    <span class="icon">🕵️</span>
-    <h3>Bab 2: Analisis Data</h3>
-    <small>Misi Privasi & Keamanan</small>
-</div>
 
         <div class="card locked-card" onclick="alert('Belum tersedia')">
             <span class="icon">⚔️</span>
-            <h3>LKPD 2: Excel Ninja</h3>
-            <small>Coming Soon</small>
+            <h3>Excel Ninja</h3>
+            <small>Terkunci</small>
         </div>
     </div>
 
     <script>
+        // Logika untuk menampilkan nama dari localStorage
         const nama = localStorage.getItem('siswa_nama');
         const kelas = localStorage.getItem('siswa_kelas');
-        if (!nama || !kelas) { window.location.href = 'index.html'; }
-        else {
+        
+        if (!nama || !kelas) { 
+            window.location.href = 'index.html'; 
+        } else {
             document.getElementById('sapaan').innerText = `Halo, ${nama}`;
-            document.getElementById('infoKelas').innerText = kelas;
+            document.getElementById('infoKelas').innerText = `Kelas: ${kelas}`;
         }
 
         function bukaLKPD(kode) {
@@ -109,6 +129,3 @@
     </script>
 </body>
 </html>
-
-
-
