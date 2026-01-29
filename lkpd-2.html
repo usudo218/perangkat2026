@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Proyek: Computational Thinking</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; padding: 20px; color: #333; margin: 0; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px; }
+        .header h1 { font-size: 1.5rem; margin: 0; color: #2c3e50; font-weight: 800; }
+        .header p { margin: 5px 0 0; color: #64748b; font-size: 0.9rem; }
+        
+        .badge { background: #e0f2fe; color: #0284c7; padding: 8px 15px; border-radius: 8px; text-align: right; font-size: 0.9rem; border: 1px solid #bae6fd; }
+        .badge-nama { font-weight: bold; font-size: 1rem; }
+        
+        /* Kartu Soal */
+        .soal-card { background: #fffbeb; border: 2px solid #fcd34d; border-radius: 12px; padding: 25px; margin-bottom: 25px; position: relative; }
+        .soal-card::before { content: "STUDI KASUS"; position: absolute; top: 0; right: 0; background: #fcd34d; color: #92400e; font-size: 0.7rem; font-weight: bold; padding: 5px 12px; border-bottom-left-radius: 10px; }
+        
+        .soal-text { font-size: 1.1rem; line-height: 1.7; color: #1e293b; }
+        .soal-text ul { background: rgba(255,255,255,0.5); padding: 15px 15px 15px 35px; border-radius: 8px; border: 1px dashed #d97706; }
+        .soal-text li { margin-bottom: 8px; }
+
+        /* Kotak Colab/Koding */
+        .colab-box { background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 10px; font-family: 'Consolas', 'Courier New', monospace; margin-top: 20px; border-left: 5px solid #2563eb; overflow-x: auto; }
+        .colab-title { color: #60a5fa; font-weight: bold; margin-bottom: 10px; display: block; font-size: 0.9rem; }
+        
+        /* Instruksi & Tombol */
+        .instruction { background: #f1f5f9; padding: 20px; border-radius: 10px; border-left: 5px solid #64748b; margin-bottom: 25px; }
+        .btn-colab { display: inline-block; background: #2563eb; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; margin-top: 15px; transition: 0.2s; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
+        .btn-colab:hover { background: #1d4ed8; transform: translateY(-2px); }
+
+        @media print {
+            .btn-colab { display: none; }
+            .container { box-shadow: none; border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>LKPD: PROYEK KONSTRUKSI</h1>
+                <p>Informatika | Materi: Berpikir Komputasional (Coding)</p>
+            </div>
+            <div class="badge">
+                <div id="namaSiswa" class="badge-nama">Memuat...</div>
+                <div id="kelasSiswa">-</div>
+            </div>
+        </div>
+
+        <div class="instruction">
+            <h3 style="margin-top:0; color:#334155;">⚠️ Instruksi Pengerjaan:</h3>
+            <ol style="line-height: 1.6;">
+                <li>Baca spesifikasi proyek di bawah ini (setiap siswa mendapat angka berbeda).</li>
+                <li>Klik tombol <strong>Buka Google Colab</strong>.</li>
+                <li>Salin <strong>Data Awal</strong> (variabel) ke dalam sel kode Python.</li>
+                <li>Buat rumus Python untuk menghitung solusinya.</li>
+                <li>Salin kode dan hasil akhirnya ke lembar jawaban/laporan.</li>
+            </ol>
+            <a href="https://colab.research.google.com/#create=true" target="_blank" class="btn-colab">🚀 Buka Google Colab (Notebook Baru)</a>
+        </div>
+
+        <div class="soal-card">
+            <div id="kontenSoal" class="soal-text">
+                Sedang mengambil data soal dari server...
+            </div>
+        </div>
+
+        <div class="colab-box">
+            <span class="colab-title">// DATA AWAL (Salin ke Colab lalu lanjutkan kodingnya)</span>
+            <pre id="hintCode" style="margin:0;"># Loading data...</pre>
+        </div>
+
+        <div style="margin-top:20px; text-align:center; color:#94a3b8; font-size:0.8rem">
+            Kode Paket: <span id="kodePaket">-</span>
+        </div>
+    </div>
+
+    <script src="siswa.js"></script>
+    <script>
+        // --- 1. GENERATOR SOAL (LOGIKA SISI KLIEN) ---
+        // Ini menggantikan peran Python sebelumnya agar file HTML ini mandiri.
+        
+        function generateSoal(seed) {
+            // Menggunakan "pseudo-random" sederhana berdasarkan index siswa
+            // agar soal konsisten (tidak berubah saat di-refresh)
+            const jenisSoal = seed % 3; // 0: Keramik, 1: Cat, 2: Paving
+
+            // Fungsi acak deterministik
+            const randomVal = (min, max, modifier) => {
+                const x = Math.sin(seed + modifier) * 10000;
+                return Math.floor((x - Math.floor(x)) * (max - min + 1)) + min;
+            };
+
+            let soalHTML = "";
+            let hintCode = "";
+            let kodeUnik = "";
+
+            if (jenisSoal === 0) {
+                // KERAMIK
+                const p = randomVal(4, 15, 1);
+                const l = randomVal(3, 10, 2);
+                const opsiKeramik = [
+                    {nama: 'Keramik Putih', uk: 40, isi: 6},
+                    {nama: 'Granit Mewah', uk: 60, isi: 4},
+                    {nama: 'Keramik Kayu', uk: 50, isi: 4}
+                ];
+                const item = opsiKeramik[randomVal(0, 2, 3)];
+
+                soalHTML = `
+                    <strong>Kasus: Pemasangan Lantai Ruangan</strong><br><br>
+                    Pak Cokro meminta bantuan Anda menghitung kebutuhan material untuk ruangan dengan spesifikasi:
+                    <ul>
+                        <li>Panjang Ruangan: <strong>${p} meter</strong></li>
+                        <li>Lebar Ruangan: <strong>${l} meter</strong></li>
+                        <li>Jenis Keramik: <strong>${item.nama}</strong> (Ukuran ${item.uk} x ${item.uk} cm)</li>
+                        <li>Isi per Kardus: <strong>${item.isi} keping</strong></li>
+                    </ul>
+                    <strong>Pertanyaan:</strong><br>
+                    Berapa kardus (dos) yang harus dibeli jika wajib melebihkan <strong>5% (Safety Factor)</strong> untuk cadangan?
+                `;
+
+                hintCode = `# Data Awal (Soal Keramik)
+panjang_ruang = ${p}      # meter
+lebar_ruang = ${l}        # meter
+sisi_keramik = ${item.uk}       # cm (jangan lupa konversi ke meter!)
+isi_per_dos = ${item.isi}       # keping
+safety_factor = 0.05    # 5%
+
+# TULIS RUMUS DI BAWAH SINI:
+# 1. Hitung Luas Ruangan
+# 2. Hitung Luas 1 Keping Keramik
+# 3. Hitung Kebutuhan Keping (Luas Ruang / Luas Keramik)
+# 4. Tambahkan Safety Factor
+# 5. Bagi dengan isi per dos (gunakan math.ceil untuk pembulatan ke atas)
+`;
+                kodeUnik = "CONS-TILE";
+
+            } else if (jenisSoal === 1) {
+                // CAT DINDING
+                const p = randomVal(3, 8, 4);
+                const l = randomVal(3, 6, 5);
+                const t = randomVal(3, 4, 6);
+                const jendela = (randomVal(20, 50, 7) / 10).toFixed(1); // misal 3.5
+                const opsiCat = [
+                    {merk: 'Cat Premium', sebar: 12, kaleng: 2.5},
+                    {merk: 'Cat Standar', sebar: 10, kaleng: 5}
+                ];
+                const item = opsiCat[randomVal(0, 1, 8)];
+
+                soalHTML = `
+                    <strong>Kasus: Pengecatan Dinding Kamar</strong><br><br>
+                    Anda diminta menghitung kebutuhan cat untuk sebuah kamar dengan data:
+                    <ul>
+                        <li>Dimensi Kamar: <strong>${p}m x ${l}m</strong>, Tinggi: <strong>${t}m</strong></li>
+                        <li>Luas Pintu & Jendela (Tidak dicat): <strong>${jendela} m²</strong></li>
+                        <li>Jenis Cat: <strong>${item.merk}</strong></li>
+                        <li>Daya Sebar Cat: <strong>${item.sebar} m²/liter</strong></li>
+                        <li>Ukuran Kemasan: <strong>${item.kaleng} Liter/kaleng</strong></li>
+                    </ul>
+                    <strong>Pertanyaan:</strong><br>
+                    Berapa kaleng cat yang harus dibeli agar menutup seluruh dinding dalam?
+                `;
+
+                hintCode = `# Data Awal (Soal Cat)
+panjang = ${p}          # meter
+lebar = ${l}            # meter
+tinggi = ${t}           # meter
+luas_tak_dicat = ${jendela} # meter persegi (pintu/jendela)
+daya_sebar = ${item.sebar}      # m2 per liter
+isi_kaleng = ${item.kaleng}     # liter
+
+# TULIS RUMUS DI BAWAH SINI:
+# 1. Hitung Keliling Ruangan
+# 2. Hitung Luas Dinding Kotor (Keliling x Tinggi)
+# 3. Hitung Luas Bersih (Luas Kotor - Luas Tak Dicat)
+# 4. Hitung Liter Cat (Luas Bersih / Daya Sebar)
+# 5. Hitung Jumlah Kaleng (Liter / Isi Kaleng)
+`;
+                kodeUnik = "CONS-PAINT";
+
+            } else {
+                // PAVING
+                const p = randomVal(8, 20, 9);
+                const l = randomVal(5, 12, 10);
+                const std = 44;
+
+                soalHTML = `
+                    <strong>Kasus: Paving Block Halaman</strong><br><br>
+                    Kontraktor sekolah ingin memasang paving block di halaman dengan data:
+                    <ul>
+                        <li>Panjang Halaman: <strong>${p} meter</strong></li>
+                        <li>Lebar Halaman: <strong>${l} meter</strong></li>
+                        <li>Standar Kebutuhan: <strong>${std} buah/m²</strong></li>
+                    </ul>
+                    <strong>Pertanyaan:</strong><br>
+                    Hitung total buah paving yang harus dipesan dengan menambahkan <strong>Safety Factor 5%</strong> (dikalikan 1.05)!
+                `;
+
+                hintCode = `# Data Awal (Soal Paving)
+panjang_hal = ${p}      # meter
+lebar_hal = ${l}        # meter
+std_paving = ${std}       # buah per m2
+
+# TULIS RUMUS DI BAWAH SINI:
+# 1. Hitung Luas Halaman
+# 2. Hitung Kebutuhan Murni (Luas x Std)
+# 3. Hitung Total Aman (Kebutuhan Murni * 1.05)
+# 4. Bulatkan ke atas (import math -> math.ceil)
+`;
+                kodeUnik = "CONS-BLOCK";
+            }
+
+            return { html: soalHTML, code: hintCode, id: `${kodeUnik}-${seed}` };
+        }
+
+
+        // --- 2. LOGIKA UTAMA (SAAT PAGE LOAD) ---
+        document.addEventListener("DOMContentLoaded", function() {
+            const nama = localStorage.getItem('siswa_nama');
+            const kelas = localStorage.getItem('siswa_kelas');
+
+            if (!nama) {
+                alert("Anda belum login. Silakan masuk dari halaman utama.");
+                window.location.href = 'index.html'; 
+                return;
+            }
+
+            // Tampilkan Identitas
+            document.getElementById('namaSiswa').innerText = nama;
+            document.getElementById('kelasSiswa').innerText = kelas;
+
+            // Cari Index Siswa di Database siswa.js
+            let indexSiswa = -1;
+            if (typeof SISWA_BARU !== 'undefined') {
+                indexSiswa = SISWA_BARU.findIndex(s => s.nama === nama);
+            }
+
+            // Jika siswa tidak ada di list (Tamu), pakai angka random
+            // Jika ada, pakai indexnya agar soal konsisten
+            const seed = (indexSiswa === -1) ? Math.floor(Math.random() * 100) : (indexSiswa + 1);
+
+            // Generate Soal
+            const dataSoal = generateSoal(seed);
+
+            // Render ke Layar
+            document.getElementById('kontenSoal').innerHTML = dataSoal.html;
+            document.getElementById('hintCode').innerText = dataSoal.code;
+            document.getElementById('kodePaket').innerText = dataSoal.id;
+        });
+    </script>
+</body>
+</html>
