@@ -108,7 +108,7 @@
             <small>Analisis Data</small>
         </div>
 
-        <div class="card tugas2-card" onclick="bukaLKPD('LKPD-02')">
+        <div class="card tugas-card" onclick="bukaLKPD2('LKPD-02')">
             <span class="icon">⚔️</span>
             <h3>LKPD 2: Proyek Coding</h3>
             <small>Google Collab</small>
@@ -129,6 +129,9 @@
         function bukaLKPD(kode) {
             localStorage.setItem('active_lkpd', kode);
             window.location.href = 'lkpd.html';
+ function bukaLKPD2(kode) {
+            localStorage.setItem('active_lkpd', kode);
+            window.location.href = 'lkpd_2.html';
         }
 
         function logout() {
@@ -138,6 +141,7 @@
     </script>
 </body>
 </html>
+
 
 
 
