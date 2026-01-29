@@ -94,8 +94,6 @@
             <h3>Praktik Lintas Bidang</h3>
             <small>Buka Materi</small>
         </div>
-
-        
     </div>
 
     <div class="section-title">
@@ -104,14 +102,14 @@
     <div class="grid-menu">
         <div class="card tugas-card" onclick="bukaLKPD('LKPD-01')">
             <span class="icon">🕵️</span>
-            <h3>ANALISA DATA - VISUALISASI DATA</h3>
-            <small>Analisis Data</small>
+            <h3>LKPD 1: Analisis Data</h3>
+            <small>Visualisasi Dasar</small>
         </div>
 
         <div class="card tugas-card" onclick="bukaLKPD_2('LKPD-02')">
             <span class="icon">⚔️</span>
             <h3>LKPD 2: Proyek Coding</h3>
-            <small>Google Collab</small>
+            <small>Studi Kasus Konstruksi</small>
         </div>
     </div>
 
@@ -119,6 +117,7 @@
         const nama = localStorage.getItem('siswa_nama');
         const kelas = localStorage.getItem('siswa_kelas');
         
+        // Cek Login
         if (!nama || !kelas) { 
             window.location.href = 'index.html'; 
         } else {
@@ -126,11 +125,20 @@
             document.getElementById('infoKelas').innerText = `Kelas: ${kelas}`;
         }
 
+        // Fungsi Buka LKPD 1
         function bukaLKPD(kode) {
             localStorage.setItem('active_lkpd', kode);
             window.location.href = 'lkpd.html';
         }
 
+        // Fungsi Buka LKPD 2 (YANG SEBELUMNYA HILANG)
+        // Pastikan nama file tujuannya sesuai dengan yang Bapak upload (lkpd_proyek.html)
+        function bukaLKPD_2(kode) {
+            localStorage.setItem('active_lkpd', kode);
+            window.location.href = 'lkpd_proyek.html'; 
+        }
+
+        // Fungsi Logout
         function logout() {
             localStorage.clear();
             window.location.href = 'index.html';
@@ -138,13 +146,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
